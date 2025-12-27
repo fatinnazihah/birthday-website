@@ -29,62 +29,76 @@ const WishesWall = ({ userType }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newWish.name || !newWish.message) return;
-
     setLoading(true);
     try {
       await addDoc(collection(db, 'wishes'), {
         ...newWish,
         timestamp: new Date().toISOString()
       });
-      
       setNewWish({ name: '', message: '' });
       fetchWishes();
-      alert('🎉 Wish sent successfully!');
+      alert('Success: Wish recorded in database!');
     } catch (error) {
-      alert('❌ Error sending wish. Please try again.');
-      console.error(error);
+      alert('Error: Could not write to disk.');
     }
     setLoading(false);
   };
 
   return (
-    <div className="wishes-container">
-      <h1 className="wishes-title">💌 Birthday Wishes Wall 💌</h1>
+    <div className="wishes-wrapper">
+      {/* 1. Guest Form (Hidden for admin usually, but shown here for testing) */}
+      <div className="guestbook-form-container">
+        <div className="y2k-fieldset">
+            <legend>✍️ Sign the Guestbook</legend>
+            <form onSubmit={handleSubmit} className="guestbook-form">
+                <div className="form-group">
+                    <label>Name:</label>
+                    <input 
+                        type="text" 
+                        value={newWish.name} 
+                        onChange={(e) => setNewWish({ ...newWish, name: e.target.value })} 
+                        required 
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Message:</label>
+                    <textarea 
+                        rows="3"
+                        value={newWish.message}
+                        onChange={(e) => setNewWish({ ...newWish, message: e.target.value })}
+                        required
+                    />
+                </div>
+                <div style={{textAlign: 'right'}}>
+                    <button type="submit" className="retro-btn" disabled={loading}>
+                        {loading ? 'Saving...' : 'Send to Server'}
+                    </button>
+                </div>
+            </form>
+        </div>
+      </div>
 
-      {userType === 'guest' && (
-        <form onSubmit={handleSubmit} className="wish-form">
-          <input
-            type="text"
-            placeholder="Your Name"
-            value={newWish.name}
-            onChange={(e) => setNewWish({ ...newWish, name: e.target.value })}
-            required
-          />
-          <textarea
-            placeholder="Write your birthday wish..."
-            value={newWish.message}
-            onChange={(e) => setNewWish({ ...newWish, message: e.target.value })}
-            rows="4"
-            required
-          />
-          <button type="submit" disabled={loading}>
-            {loading ? '⏳ Sending...' : '🎁 Send Wish'}
-          </button>
-        </form>
-      )}
-
-      <div className="wishes-grid">
-        {wishes.map((wish, idx) => (
-          <div key={wish.id} className="wish-card" style={{ animationDelay: `${idx * 0.1}s` }}>
-            <p className="wish-message">"{wish.message}"</p>
-            <p className="wish-author">— {wish.name}</p>
-            <span className="wish-emoji">💝</span>
-          </div>
+      {/* 2. List of Wishes */}
+      <div className="guestbook-entries">
+        <p style={{borderBottom: '1px dotted black', paddingBottom: '5px'}}>
+            Total Entries: {wishes.length}
+        </p>
+        
+        {wishes.map((wish) => (
+            <div key={wish.id} className="gb-entry">
+                <div className="gb-header">
+                    <span className="gb-name">From: {wish.name}</span>
+                    <span className="gb-date">
+                        {wish.timestamp ? new Date(wish.timestamp).toLocaleDateString() : 'Unknown Date'}
+                    </span>
+                </div>
+                <div className="gb-body">
+                    "{wish.message}"
+                </div>
+            </div>
         ))}
         
-        {wishes.length === 0 && (
-          <p className="no-wishes">No wishes yet! Be the first to send one 🎉</p>
-        )}
+        {wishes.length === 0 && <p>No entries found. Be the first!</p>}
       </div>
     </div>
   );

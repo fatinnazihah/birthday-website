@@ -1,129 +1,59 @@
-/* src/styles/WishesWall.css */
-.wishes-container {
-  padding: 20px;
-  max-width: 1100px;
-  margin: 0 auto;
+.wishes-wrapper {
+    font-family: 'Verdana', sans-serif;
+    font-size: 12px;
 }
 
-/* --- Y2K FORM STYLING --- */
-.wish-form {
-  background: var(--cream-light);
-  border: var(--border-chunky);
-  padding: 2rem;
-  /* Making it look like an old OS window */
-  box-shadow: var(--box-shadow-hard);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin: 2rem auto 4rem auto; /* Center horizontally */
-  max-width: 500px;
-  position: relative;
+.y2k-fieldset {
+    border: 2px groove #fff;
+    padding: 10px;
+    margin-bottom: 20px;
 }
-
-/* Fake title bar for the form window */
-.wish-form::before {
-  content: '★ SEND_A_WISH.exe ★';
-  position: absolute;
-  top: -20px;
-  left: -4px;
-  right: -4px;
-  height: 25px;
-  background: var(--mocha-dark);
-  color: var(--accent-gold);
-  font-weight: bold;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  padding-left: 10px;
-  border: var(--border-chunky);
-  border-bottom: none;
-}
-
-.wish-form input, 
-.wish-form textarea {
-  padding: 12px;
-  border: var(--border-pixel);
-  background-color: #FFF;
-  font-family: 'Courier New', monospace; /* Retro terminal font for inputs */
-  font-weight: bold;
-  color: var(--mocha-dark);
-}
-.wish-form input:focus, .wish-form textarea:focus {
-  outline: none;
-  border: 2px solid var(--accent-orange);
-  background-color: var(--cream-light);
-}
-
-/* --- GRID & CARDS --- */
-.wishes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
-  padding: 20px;
-  background: rgba(255,255,255,0.5); /* Semi-transparent backing */
-  border: var(--border-pixel);
-}
-
-.wish-card {
-  background: var(--cream-light);
-  padding: 20px;
-  border: var(--border-chunky);
-  box-shadow: 4px 4px 0px var(--mocha-mid);
-  position: relative;
-  transition: transform 0.2s;
-  /* Add Y2K decorative corners using gradients */
-  background-image: 
-    linear-gradient(135deg, var(--accent-gold) 10px, transparent 10px),
-    linear-gradient(225deg, var(--accent-gold) 10px, transparent 10px),
-    linear-gradient(315deg, var(--accent-gold) 10px, transparent 10px),
-    linear-gradient(45deg, var(--accent-gold) 10px, transparent 10px);
-  background-position: top left, top right, bottom right, bottom left;
-  background-size: 50% 50%;
-  background-repeat: no-repeat;
-}
-
-.wish-card:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 7px 7px 0px var(--mocha-mid);
-  z-index: 2;
-}
-
-/* Alternating slight rotations for chaotic feel */
-.wish-card:nth-child(even) { transform: rotate(2deg); }
-.wish-card:nth-child(odd) { transform: rotate(-2deg); }
-.wish-card:nth-child(even):hover { transform: rotate(2deg) translate(-3px, -3px); }
-.wish-card:nth-child(odd):hover { transform: rotate(-2deg) translate(-3px, -3px); }
-
-
-.wish-message {
-  font-family: 'Comic Sans MS', 'Arial', cursive; /* It had to be done */
-  font-size: 1.1rem;
-  border-bottom: var(--border-pixel);
-  padding-bottom: 15px;
-  margin: 15px 0;
-}
-
-.wish-author {
-  font-weight: bold;
-  text-align: right;
-  color: var(--mocha-dark);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.wish-emoji {
-  position: absolute;
-  top: -15px;
-  right: -10px;
-  font-size: 2rem;
-  filter: drop-shadow(2px 2px 0px var(--mocha-mid));
-  animation: sparkle 2s infinite ease-in-out;
-}
-
-.no-wishes {
-    text-align: center;
+.y2k-fieldset legend {
     font-weight: bold;
-    background: var(--cream-light);
-    padding: 20px;
-    border: var(--border-pixel);
+    padding: 0 5px;
+}
+
+.form-group {
+    display: flex;
+    margin-bottom: 10px;
+    align-items: flex-start;
+}
+.form-group label {
+    width: 60px;
+    font-weight: bold;
+}
+.form-group input, .form-group textarea {
+    flex-grow: 1;
+    border: 2px inset #d4d0c8;
+    background: #fff;
+    font-family: 'Verdana', sans-serif;
+}
+
+.guestbook-entries {
+    background: #fff;
+    border: 2px inset #d4d0c8;
+    padding: 10px;
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.gb-entry {
+    background: #f0f0f0;
+    border: 1px solid #999;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.gb-header {
+    background: #000080;
+    color: white;
+    padding: 2px 5px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+}
+
+.gb-body {
+    padding: 10px;
+    font-style: italic;
 }

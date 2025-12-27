@@ -3,101 +3,102 @@ import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../firebase';
 import '../styles/PhotoGallery.css';
 
-const PhotoGallery = () => {
+const PhotoGallery = ({ userType }) => {
   const [photos, setPhotos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
-  useEffect(() => {
-    fetchPhotos();
-  }, []);
+  useEffect(() => { fetchPhotos(); }, []);
 
   const fetchPhotos = async () => {
     try {
       const photosRef = ref(storage, 'gallery/');
       const photosList = await listAll(photosRef);
-      
       const photoURLs = await Promise.all(
         photosList.items.map(async (item) => {
           const url = await getDownloadURL(item);
           return { name: item.name, url };
         })
       );
-      
       setPhotos(photoURLs);
-    } catch (error) {
-      console.error('Error fetching photos:', error);
-    }
+    } catch (error) { console.error(error); }
   };
 
   const handleUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
-
     setUploading(true);
-    
     try {
       for (const file of files) {
         const photoRef = ref(storage, `gallery/${Date.now()}_${file.name}`);
         await uploadBytes(photoRef, file);
       }
-      
       await fetchPhotos();
-      alert('🎉 Photos uploaded successfully!');
-    } catch (error) {
-      alert('❌ Error uploading photos');
-      console.error(error);
-    }
-    
+    } catch (error) { alert('Upload failed'); }
     setUploading(false);
   };
 
   return (
-    <div className="gallery-container">
-      <h1 className="gallery-title">📸 Our Memories Together 📸</h1>
-
-      <div className="upload-section">
-        <label className="upload-btn">
-          {uploading ? '⏳ Uploading...' : '📤 Upload Photos'}
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleUpload}
-            disabled={uploading}
-            style={{ display: 'none' }}
-          />
-        </label>
+    <div className="gallery-explorer">
+      {/* TOOLBAR */}
+      <div className="explorer-toolbar">
+         <span>File</span> <span>Edit</span> <span>View</span> <span>Favorites</span> <span>Help</span>
+      </div>
+      <div className="address-bar-row">
+          <span>Address</span>
+          <div className="address-input">C:\My Documents\Birthday_Pics</div>
       </div>
 
-      <div className="photos-grid">
-        {photos.map((photo, idx) => (
-          <div 
-            key={idx} 
-            className="photo-card"
-            onClick={() => setSelectedPhoto(photo)}
-            style={{ animationDelay: `${idx * 0.05}s` }}
-          >
-            <img src={photo.url} alt={`Memory ${idx + 1}`} />
-            <div className="photo-overlay">
-              <span className="like-icon">❤️</span>
-            </div>
-          </div>
-        ))}
-        
-        {photos.length === 0 && (
-          <p className="no-photos">No photos yet! Upload your first memory 📸</p>
-        )}
+      <div className="explorer-body">
+        {/* SIDEBAR */}
+        <div className="explorer-sidebar">
+            <div className="sidebar-item">📁 My Computer</div>
+            <div className="sidebar-item">📁 3½ Floppy (A:)</div>
+            <div className="sidebar-item open">📂 My Documents</div>
+            <div className="sidebar-item sub-item">📷 My Pictures</div>
+        </div>
+
+        {/* ICONS GRID */}
+        <div className="icons-view">
+             {/* Upload Icon (Only for Birthday Girl) */}
+             {userType === 'birthday-girl' && (
+                <label className="desktop-icon upload-icon">
+                    <div className="icon-img upload-img">⬆️</div>
+                    <span className="icon-text">{uploading ? 'Uploading...' : 'Add_New.exe'}</span>
+                    <input type="file" multiple accept="image/*" onChange={handleUpload} style={{display:'none'}} />
+                </label>
+             )}
+
+             {photos.map((photo, idx) => (
+                 <div key={idx} className="desktop-icon" onClick={() => setSelectedPhoto(photo)}>
+                     <div className="icon-img">
+                         <img src={photo.url} alt="thumbnail" />
+                     </div>
+                     <span className="icon-text">{photo.name.substring(0, 10)}...jpg</span>
+                 </div>
+             ))}
+
+             {photos.length === 0 && <p style={{padding: '20px'}}>Folder is empty.</p>}
+        </div>
       </div>
 
+      {/* FOOTER */}
+      <div className="explorer-status-bar">
+          {photos.length} object(s)
+      </div>
+
+      {/* POPUP MODAL */}
       {selectedPhoto && (
         <div className="photo-modal" onClick={() => setSelectedPhoto(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <img src={selectedPhoto.url} alt="Full size" />
-            <button onClick={() => setSelectedPhoto(null)} className="close-modal">
-              ✕
-            </button>
-          </div>
+            <div className="y2k-window modal-win" onClick={e => e.stopPropagation()}>
+                <div className="title-bar">
+                    <div className="title-text">Image Viewer</div>
+                    <div className="title-controls"><div className="control-btn" onClick={() => setSelectedPhoto(null)}>X</div></div>
+                </div>
+                <div className="window-content" style={{textAlign:'center'}}>
+                    <img src={selectedPhoto.url} alt="Full" style={{maxWidth: '100%', maxHeight: '70vh'}} />
+                </div>
+            </div>
         </div>
       )}
     </div>

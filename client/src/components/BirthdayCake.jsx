@@ -4,31 +4,30 @@ import '../styles/BirthdayCake.css';
 const BirthdayCake = ({ onComplete }) => {
   const [candlesBlown, setCandlesBlown] = useState(0);
   const [isListening, setIsListening] = useState(false);
-  const [micLevel, setMicLevel] = useState(0); // Visualizer state
+  const [micLevel, setMicLevel] = useState(0); 
   
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const dataArrayRef = useRef(null);
   const sourceRef = useRef(null);
   const audioPlayerRef = useRef(null); 
+  const animationFrameRef = useRef(null);
 
   const totalCandles = 5; 
 
+  // Clean up on unmount
   useEffect(() => {
     return () => {
+      cancelAnimationFrame(animationFrameRef.current);
       if (audioContextRef.current) audioContextRef.current.close();
       stopMusic();
     };
   }, []);
 
-  // --- AUDIO LOGIC ---
   const startMusic = () => {
       if(audioPlayerRef.current) {
           audioPlayerRef.current.volume = 0.5;
-          const playPromise = audioPlayerRef.current.play();
-          if (playPromise !== undefined) {
-              playPromise.catch(error => console.log("Audio play failed:", error));
-          }
+          audioPlayerRef.current.play().catch(e => console.log("Audio Error:", e));
       }
   };
 
@@ -41,11 +40,20 @@ const BirthdayCake = ({ onComplete }) => {
 
   const startListening = async () => {
     try {
+      // 1. Initialize Audio Context (Standard + Webkit for Safari)
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioContextRef.current = new AudioContext();
+
+      // 2. CRITICAL: Resume context if it's suspended (browsers block this by default)
+      if (audioContextRef.current.state === 'suspended') {
+        await audioContextRef.current.resume();
+      }
+
       startMusic();
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setIsListening(true);
 
-      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
       analyserRef.current = audioContextRef.current.createAnalyser();
       sourceRef.current = audioContextRef.current.createMediaStreamSource(stream);
       
@@ -57,31 +65,27 @@ const BirthdayCake = ({ onComplete }) => {
       detectBlow();
     } catch (err) {
       console.error("Mic Error:", err);
-      alert("Microphone blocked? Use the manual button below!");
+      alert("Microphone failed to start. Please check permissions or use the manual button.");
     }
   };
 
   const detectBlow = () => {
     if (!analyserRef.current || !isListening) return;
-    if (candlesBlown >= totalCandles) return;
 
-    requestAnimationFrame(detectBlow);
+    animationFrameRef.current = requestAnimationFrame(detectBlow);
     analyserRef.current.getByteFrequencyData(dataArrayRef.current);
 
-    // Calculate volume
     let sum = 0;
     for (let i = 0; i < dataArrayRef.current.length; i++) {
       sum += dataArrayRef.current[i];
     }
     const average = sum / dataArrayRef.current.length;
     
-    // Update visualizer (0 to 100 scale)
-    setMicLevel(Math.min(100, average * 2)); 
+    setMicLevel(Math.min(100, average * 3)); // Boost visual sensitivity
 
-    // Threshold detection
-    const BLOW_THRESHOLD = 40; // Adjusted for frequency data
-    if (average > BLOW_THRESHOLD) {
-       setCandlesBlown(prev => Math.min(prev + 0.15, totalCandles));
+    // 0.08 threshold was too high for some mics. 30 (on 0-255 scale) is better.
+    if (average > 30 && candlesBlown < totalCandles) {
+       setCandlesBlown(prev => Math.min(prev + 0.1, totalCandles));
     }
   };
 
@@ -93,25 +97,27 @@ const BirthdayCake = ({ onComplete }) => {
       if(Math.floor(candlesBlown) >= totalCandles) {
           stopMusic(); 
           setIsListening(false);
-          // Notify parent that we are done!
+          cancelAnimationFrame(animationFrameRef.current);
           if (onComplete) onComplete();
       }
-  }, [candlesBlown, onComplete, totalCandles]);
+  }, [candlesBlown, totalCandles]); // Removed onComplete from dependency to avoid loop
 
   return (
     <div className="cake-wrapper">
       <audio ref={audioPlayerRef} src="/birthday-song.mp3" loop playsInline />
 
       <div className="y2k-window" style={{maxWidth: '500px', margin: '0 auto'}}>
-        <div className="title-bar active">
+        <div className="title-bar">
             <div className="title-text">🎂 celebration_setup.exe</div>
-            <div className="title-controls"><div className="control-box">_</div><div className="control-box">X</div></div>
+            <div className="title-controls"><div className="control-btn">X</div></div>
         </div>
         <div className="window-content" style={{textAlign: 'center', background: '#E0F7FA'}}>
             
             {!isListening && candlesBlown === 0 && (
-                <div style={{padding: '20px'}}>
-                    <h3>Are you ready?</h3>
+                <div style={{padding: '30px'}}>
+                    <h3>Ready to Celebrate?</h3>
+                    <p>Make sure your sound is ON!</p>
+                    <br/>
                     <button className="retro-btn" onClick={startListening}>
                         Start Party 🎤
                     </button>
@@ -125,15 +131,13 @@ const BirthdayCake = ({ onComplete }) => {
                  </div>
             ) : (
             <div style={{display: isListening || candlesBlown > 0 ? 'block' : 'none'}}>
-                {/* MIC VISUALIZER */}
                 {isListening && (
                     <div className="mic-meter-container">
                         <div className="mic-meter-fill" style={{width: `${micLevel}%`}}></div>
-                        <span className="mic-label">MIC INPUT</span>
+                        <span className="mic-label">MIC INPUT LEVEL</span>
                     </div>
                 )}
 
-                {/* THE CAKE */}
                 <div className="cake-container">
                     <div className="cake-body">
                         <div className="cake-layer bottom"></div>
@@ -154,8 +158,8 @@ const BirthdayCake = ({ onComplete }) => {
                 {isListening && (
                     <div style={{marginTop: '20px'}}>
                          <p className="blink-text" style={{color: 'red'}}>BLOW INTO THE MIC!</p>
-                         <button onClick={manualBlow} style={{fontSize: '10px', background:'transparent', border:'none', textDecoration:'underline', cursor:'pointer'}}>
-                            (Mic broken? Click to blow)
+                         <button onClick={manualBlow} style={{fontSize: '12px', background:'transparent', border:'none', textDecoration:'underline', cursor:'pointer'}}>
+                            (Alternative: Click here to blow)
                          </button>
                     </div>
                 )}
