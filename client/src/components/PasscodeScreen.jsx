@@ -1,65 +1,74 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/PasscodeScreen.css';
 
-const PasscodeScreen = ({ onAuthenticate }) => {
-  const [passcode, setPasscode] = useState('');
+const PasscodeScreen = ({ setAuthenticated }) => {
+  const [input, setInput] = useState('');
   const [error, setError] = useState('');
-  const [showGuestOption, setShowGuestOption] = useState(false);
+  const navigate = useNavigate();
+  const CORRECT_CODE = "1234"; // Change this to your real code
 
-  const correctPasscode = '281204';
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (passcode === correctPasscode) {
-      onAuthenticate('birthday-girl');
-    } else {
-      setError('❌ Incorrect passcode! Try again.');
-      setTimeout(() => setError(''), 3000);
+  const handleBtnClick = (value) => {
+    setError('');
+    if (input.length < 4) {
+      setInput(prev => prev + value);
     }
   };
 
-  const handleGuestAccess = () => {
-    onAuthenticate('guest');
+  const handleClear = () => setInput('');
+
+  const handleSubmit = () => {
+    if (input === CORRECT_CODE) {
+      setAuthenticated(true);
+      navigate('/dashboard');
+    } else {
+      setError('ACCESS DENIED');
+      setInput('');
+    }
   };
 
+  const KeypadBtn = ({ val, label }) => (
+    <button className="nokia-btn" onClick={() => handleBtnClick(val)}>
+      <span className="btn-val">{val}</span>
+      {label && <span className="btn-label">{label}</span>}
+    </button>
+  );
+
   return (
-    <div className="passcode-container">
-      <div className="passcode-box">
-        <h1 className="birthday-title">🎉 Happy Birthday! 🎂</h1>
+    <div className="passcode-container center-screen">
+      <div className="nokia-phone">
+        <div className="nokia-screen-bezel">
+            <div className="nokia-screen">
+                <div className="signal-bar">📶 T-Mobile</div>
+                <h2 className="enter-code-text">ENTER CODE:</h2>
+                <div className="code-display">
+                    {input.split('').map((_, i) => <span key={i}>*</span>)}
+                    {input.length === 0 && <span className="blink-cursor">_</span>}
+                </div>
+                {error && <div className="error-msg blink-text">{error}</div>}
+            </div>
+        </div>
         
-        {!showGuestOption ? (
-          <>
-            <form onSubmit={handleSubmit}>
-              <input
-                type="password"
-                className="passcode-input"
-                placeholder="Enter Passcode"
-                value={passcode}
-                onChange={(e) => setPasscode(e.target.value)}
-                maxLength={6}
-              />
-              <button type="submit" className="submit-btn">
-                🎁 Enter
-              </button>
-            </form>
-            
-            {error && <p className="error-message">{error}</p>}
-            
-            <p className="guest-link" onClick={() => setShowGuestOption(true)}>
-              Don't know the passcode? Click here
-            </p>
-          </>
-        ) : (
-          <div className="guest-access">
-            <h3>Want to leave a birthday wish? 💌</h3>
-            <button onClick={handleGuestAccess} className="guest-btn">
-              Continue as Guest
-            </button>
-            <p className="back-link" onClick={() => setShowGuestOption(false)}>
-              ← Back
-            </p>
-          </div>
-        )}
+        <div className="nokia-keypad">
+            <div className="control-row">
+                <button className="nokia-control-btn clear-btn" onClick={handleClear}>C</button>
+                <button className="nokia-control-btn enter-btn" onClick={handleSubmit}>OK</button>
+            </div>
+            <div className="num-pad-grid">
+                <KeypadBtn val="1" label="voicemail"/>
+                <KeypadBtn val="2" label="abc"/>
+                <KeypadBtn val="3" label="def"/>
+                <KeypadBtn val="4" label="ghi"/>
+                <KeypadBtn val="5" label="jkl"/>
+                <KeypadBtn val="6" label="mno"/>
+                <KeypadBtn val="7" label="pqrs"/>
+                <KeypadBtn val="8" label="tuv"/>
+                <KeypadBtn val="9" label="wxyz"/>
+                <KeypadBtn val="*" label="+"/>
+                <KeypadBtn val="0" label=" "/>
+                <KeypadBtn val="#" label="⇧"/>
+            </div>
+        </div>
       </div>
     </div>
   );

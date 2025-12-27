@@ -1,98 +1,99 @@
-.passcode-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* client/src/styles/Passcode.css */
+.center-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
 }
 
-.passcode-box {
-  background: white;
-  padding: 50px;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  text-align: center;
-  max-width: 400px;
-  animation: fadeIn 0.5s;
+.nokia-phone {
+    background: #333333; /* Dark classic Nokia body */
+    border-radius: 30px 30px 50px 50px;
+    padding: 30px 20px 50px 20px;
+    box-shadow: inset -5px -5px 15px rgba(0,0,0,0.5), 5px 5px 15px rgba(0,0,0,0.3);
+    border: 4px solid #222;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+.nokia-screen-bezel {
+    background: #8c9c84; /* That greenish Nokia screen color */
+    padding: 10px;
+    border-radius: 10px;
+    border: 3px inset #6b7a63;
+    margin-bottom: 25px;
 }
 
-.birthday-title {
-  color: #667eea;
-  margin-bottom: 30px;
-  font-size: 2rem;
+.nokia-screen {
+    font-family: var(--font-pixel);
+    color: #222;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.passcode-input {
-  width: 100%;
-  padding: 15px;
-  font-size: 1.2rem;
-  border: 2px solid #667eea;
-  border-radius: 10px;
-  text-align: center;
-  letter-spacing: 5px;
-  margin-bottom: 20px;
+.signal-bar { font-size: 14px; }
+.enter-code-text { text-align: center; font-size: 20px; margin: 10px 0; }
+.code-display {
+    font-size: 40px;
+    text-align: center;
+    letter-spacing: 5px;
+    height: 40px;
 }
 
-.passcode-input:focus {
-  outline: none;
-  border-color: #764ba2;
-  box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+.error-msg {
+    color: darkred;
+    text-align: center;
+    font-weight: bold;
 }
 
-.submit-btn, .guest-btn {
-  width: 100%;
-  padding: 15px;
-  font-size: 1.1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+/* Keypad Styling */
+.control-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 0 20px;
 }
 
-.submit-btn:hover, .guest-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+.nokia-control-btn {
+    background: #f0f0f0;
+    border: 2px solid #999;
+    border-radius: 10px;
+    padding: 10px 25px;
+    font-weight: bold;
+    font-family: var(--font-readable);
+    cursor: pointer;
+    box-shadow: 0 3px 0 #999;
+}
+.nokia-control-btn:active { transform: translateY(3px); box-shadow: none; }
+.enter-btn { background: #a4dba4; } /* Greenish OK button */
+.clear-btn { background: #dba4a4; } /* Reddish Clear button */
+
+.num-pad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
 }
 
-.error-message {
-  color: #f5576c;
-  margin-top: 15px;
-  font-weight: bold;
-  animation: shake 0.5s;
+.nokia-btn {
+    background: #e0e0e0;
+    border: 2px solid #bbb;
+    border-radius: 15px;
+    padding: 10px 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #bbb;
+    transition: all 0.1s;
 }
+.nokia-btn:active { transform: translateY(4px); box-shadow: none; }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
-}
+.btn-val { font-size: 24px; font-weight: bold; font-family: var(--font-readable); }
+.btn-label { font-size: 10px; color: #666; margin-top: -2px; font-family: var(--font-readable); }
 
-.guest-link, .back-link {
-  margin-top: 20px;
-  color: #667eea;
-  cursor: pointer;
-  text-decoration: underline;
-  font-size: 0.9rem;
-}
+/* Animations */
+.blink-text { animation: blinker 1s linear infinite; }
+.blink-cursor { animation: blinker 1.5s step-end infinite; }
 
-.guest-link:hover, .back-link:hover {
-  color: #764ba2;
-}
-
-.guest-access h3 {
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.back-link {
-  display: block;
-  margin-top: 15px;
-}
+@keyframes blinker { 50% { opacity: 0; } }

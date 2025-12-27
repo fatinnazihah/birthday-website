@@ -1,87 +1,110 @@
-/* src/index.css */
+/* client/src/index.css */
 :root {
-  /* Y2K Brownish Palette */
-  --mocha-dark: #4A3121;
-  --mocha-mid: #8D6E63;
-  --latte-beige: #D7CCC8;
-  --cream-light: #FFF8E1;
-  --accent-gold: #FFD54F;
-  --accent-orange: #FF8A65;
-
-  /* Y2K Borders & Effects */
-  --border-chunky: 4px solid var(--mocha-dark);
-  --border-pixel: 2px dashed var(--mocha-mid);
-  --box-shadow-hard: 6px 6px 0px var(--mocha-dark);
-  --gradient-glossy: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 51%, rgba(0,0,0,0.2) 100%);
+  /* Y2K Brown/Retro Palette */
+  --win-bg: #d4cfc9; /* Classic Windows 95/98 Grey-Beige */
+  --win-border-light: #ffffff;
+  --win-border-dark: #808080;
+  --win-border-darkest: #404040;
+  --win-title-bar: #8B4513; /* SaddleBrown for active windows */
+  --win-text: #000000;
   
-  /* Retro Web Font stack */
-  --font-y2k: 'Verdana', 'Arial Black', sans-serif;
+  --retro-brown: #5c4033;
+  --retro-beige: #e8dcc5;
+  --retro-pink: #eda8c4; /* For accents */
+
+  /* Fonts */
+  --font-pixel: 'VT323', monospace;
+  --font-readable: 'Courier Prime', monospace; /* Better than cursive */
 }
 
 body {
   margin: 0;
-  font-family: var(--font-y2k);
-  /* Retro patterned background */
-  background-color: var(--latte-beige);
+  font-family: var(--font-pixel);
+  /* A retro patterned background */
+  background-color: var(--retro-beige);
   background-image: 
-    linear-gradient(45deg, var(--mocha-mid) 25%, transparent 25%), 
-    linear-gradient(-45deg, var(--mocha-mid) 25%, transparent 25%), 
-    linear-gradient(45deg, transparent 75%, var(--mocha-mid) 75%), 
-    linear-gradient(-45deg, transparent 75%, var(--mocha-mid) 75%);
-  background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-  color: var(--mocha-dark);
-  cursor: crosshair; /* Retro cursor */
+    linear-gradient(45deg, var(--retro-brown) 25%, transparent 25%), 
+    linear-gradient(-45deg, var(--retro-brown) 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, var(--retro-brown) 75%), 
+    linear-gradient(-45deg, transparent 75%, var(--retro-brown) 75%);
+  background-size: 4px 4px;
+  background-blend-mode: soft-light;
+  color: var(--win-text);
+  height: 100vh;
+  overflow-x: hidden;
 }
 
-/* Funky Main Titles */
-h1 {
-  text-align: center;
-  color: var(--mocha-dark);
-  font-size: 2.5rem;
-  text-transform: uppercase;
-  text-shadow: 3px 3px 0px var(--accent-gold);
-  background: var(--cream-light);
-  border: var(--border-chunky);
-  display: inline-block;
-  padding: 10px 20px;
-  /* Center the block */
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%) skew(-5deg);
-  margin-top: 30px;
+/* --- UTILITY CLASS: THE Y2K WINDOW --- */
+/* Applies that classic beveled 3D look to any container */
+.y2k-window {
+  background: var(--win-bg);
+  border-top: 2px solid var(--win-border-light);
+  border-left: 2px solid var(--win-border-light);
+  border-right: 2px solid var(--win-border-darkest);
+  border-bottom: 2px solid var(--win-border-darkest);
+  box-shadow: inset -1px -1px 0 var(--win-border-dark), inset 1px 1px 0 var(--win-border-light);
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Global Buttons - Y2K Jelly Style */
-button {
-  font-family: var(--font-y2k);
-  background-color: var(--mocha-mid);
-  background-image: var(--gradient-glossy);
-  color: var(--cream-light);
-  border: 3px solid var(--mocha-dark);
-  padding: 12px 24px;
-  border-radius: 30px; /* Super rounded */
+.title-bar {
+  background: var(--win-title-bar);
+  color: white;
+  padding: 2px 4px;
+  font-family: var(--font-readable);
   font-weight: bold;
-  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.title-bar-controls div {
+    background: var(--win-bg);
+    color: black;
+    width: 16px;
+    height: 14px;
+    text-align: center;
+    line-height: 12px;
+    font-family: sans-serif;
+    font-size: 10px;
+    border-top: 1px solid var(--win-border-light);
+    border-left: 1px solid var(--win-border-light);
+    border-right: 1px solid var(--win-border-darkest);
+    border-bottom: 1px solid var(--win-border-darkest);
+    cursor: pointer;
+}
+
+.window-content {
+    padding: 15px;
+    overflow: auto;
+    flex-grow: 1;
+}
+
+/* Standard Y2K Button */
+button.retro-btn {
+  font-family: var(--font-pixel);
+  font-size: 1.2rem;
+  background: var(--win-bg);
+  border-top: 2px solid var(--win-border-light);
+  border-left: 2px solid var(--win-border-light);
+  border-right: 2px solid var(--win-border-darkest);
+  border-bottom: 2px solid var(--win-border-darkest);
+  padding: 5px 15px;
   cursor: pointer;
-  box-shadow: 3px 3px 0px var(--mocha-dark);
-  transition: all 0.1s;
 }
 
-button:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px var(--mocha-dark);
-  background-color: var(--accent-orange);
+button.retro-btn:active {
+  border-top: 2px solid var(--win-border-darkest);
+  border-left: 2px solid var(--win-border-darkest);
+  border-right: 2px solid var(--win-border-light);
+  border-bottom: 2px solid var(--win-border-light);
+  padding: 6px 14px 4px 16px; /* Shift text slightly on click */
 }
 
-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-/* Add some sparkle animation */
-@keyframes sparkle {
-  0% { opacity: 0.3; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 0.3; transform: scale(0.8); }
+h1, h2, h3 {
+    font-weight: normal;
+    margin-top: 0;
 }

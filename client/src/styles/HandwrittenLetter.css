@@ -1,136 +1,61 @@
+/* client/src/styles/Letter.css */
 .letter-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  text-align: center;
+    padding: 40px 20px;
+    /* center-screen handle centering */
 }
 
-.letter-title {
-  color: white;
-  font-size: 2.5rem;
-  margin-bottom: 60px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+.notepad-window {
+    max-width: 700px;
+    width: 100%;
+    background: #ffffff !important; /* Notepad content is white */
+    height: 500px; /* Fixed height for scrollbar look */
 }
 
-.envelope {
-  width: 300px;
-  height: 200px;
-  margin: 0 auto;
-  position: relative;
-  cursor: pointer;
-  animation: float 3s ease-in-out infinite;
+.notepad-menubar {
+    background: var(--win-bg);
+    border-bottom: 1px solid var(--win-border-darkest);
+    padding: 2px 5px;
+    font-family: var(--font-readable);
+    font-size: 14px;
+    display: flex;
+    gap: 15px;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+.notepad-menubar span {
+    cursor: pointer;
+}
+.notepad-menubar span:first-letter {
+    text-decoration: underline;
 }
 
-.envelope-flap {
-  width: 0;
-  height: 0;
-  border-left: 150px solid transparent;
-  border-right: 150px solid transparent;
-  border-top: 100px solid #c74343;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform-origin: top;
-  transition: transform 0.5s;
-  z-index: 2;
+.notepad-content {
+    background: #ffffff;
+    color: #000000;
+    font-family: var(--font-readable); /* The fixed readable font */
+    font-size: 1.1rem;
+    line-height: 1.6;
+    padding: 20px;
+    overflow-y: scroll; /* Always show scrollbar like real notepad */
+    /* Custom scrollbar for webkit */
+    scrollbar-width: thin;
+    scrollbar-color: var(--win-bg) var(--win-border-dark);
 }
 
-.envelope:hover .envelope-flap {
-  transform: rotateX(180deg);
+/* Webkit scrollbar styling for Chrome/Safari */
+.notepad-content::-webkit-scrollbar {
+  width: 16px;
+}
+.notepad-content::-webkit-scrollbar-track {
+  background: var(--win-border-light);
+  border: 1px solid var(--win-border-darkest);
+}
+.notepad-content::-webkit-scrollbar-thumb {
+  background: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--win-border-light) var(--win-border-darkest) var(--win-border-darkest) var(--win-border-light);
 }
 
-.envelope-body {
-  width: 300px;
-  height: 150px;
-  background: #f4e4c1;
-  position: absolute;
-  bottom: 0;
-  border-radius: 0 0 10px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-}
-
-.envelope-text {
-  color: #8b4513;
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.letter-content {
-  animation: unfold 1s;
-}
-
-@keyframes unfold {
-  0% { transform: scale(0.1) rotateY(90deg); opacity: 0; }
-  50% { transform: scale(0.5) rotateY(45deg); opacity: 0.5; }
-  100% { transform: scale(1) rotateY(0deg); opacity: 1; }
-}
-
-.paper {
-  background: #fffef0;
-  padding: 60px 40px;
-  border-radius: 10px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-  max-width: 700px;
-  margin: 0 auto;
-  position: relative;
-  border: 1px solid #d4c5a9;
-}
-
-.paper::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 40px;
-  right: 40px;
-  height: 1px;
-  background: repeating-linear-gradient(
-    to right,
-    transparent,
-    transparent 10px,
-    #e8d9c5 10px,
-    #e8d9c5 11px
-  );
-}
-
-.handwritten {
-  font-family: 'Brush Script MT', cursive;
-  font-size: 1.3rem;
-  line-height: 2;
-  color: #1a1a1a;
-  text-align: left;
-}
-
-.handwritten p {
-  margin-bottom: 15px;
-  animation: writeText 0.5s backwards;
-}
-
-@keyframes writeText {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.close-letter {
-  margin-top: 30px;
-  padding: 12px 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.3s;
-}
-
-.close-letter:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+.cursor-blink {
+    display: inline-block;
+    animation: blinker 1s step-end infinite;
 }

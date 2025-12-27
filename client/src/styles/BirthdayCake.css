@@ -1,144 +1,125 @@
+/* client/src/styles/Cake.css */
 .cake-container {
-  text-align: center;
-  padding: 40px 20px;
-  color: white;
+    padding: 20px 0;
+    /* center-screen class from Passcode.css handles centering */
 }
 
-.cake-title {
-  font-size: 2.5rem;
-  margin-bottom: 40px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-  animation: bounce 1s infinite;
+.start-overlay {
+    padding: 20px;
+    background: rgba(255,255,255,0.5);
+    border: 2px dashed var(--win-border-dark);
+    margin-bottom: 20px;
 }
 
+.wish-granted-msg {
+    animation: popIn 0.5s ease-out;
+    color: var(--retro-brown);
+}
+
+/* CSS CAKE ART */
 .cake {
-  position: relative;
-  margin: 0 auto 40px;
-  width: 300px;
+    position: relative;
+    width: 250px;
+    height: 200px;
+    margin: 60px auto 20px auto; /* Margin top for candles */
 }
 
-.candles {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 10px;
+/* Make the cake shake slightly when mic is active */
+.mic-active {
+    animation: vibrate 0.3s linear infinite;
 }
 
-.candle {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.plate {
+    position: absolute;
+    bottom: -20px;
+    left: -25px;
+    width: 300px;
+    height: 40px;
+    background: #ccc;
+    border-radius: 50%;
+    box-shadow: 0 5px 0 #999, 0 10px 10px rgba(0,0,0,0.2);
+}
+
+.layer {
+    position: absolute;
+    width: 250px;
+    height: 60px;
+    border-radius: 50% 50% 0 0 / 20px 20px 0 0;
+    /* Pixelated borders */
+    border-left: 4px solid #5a3e2b;
+    border-right: 4px solid #5a3e2b;
+}
+
+.layer-bottom { bottom: 0; background: #8B4513; z-index: 1; }
+.layer-middle { bottom: 60px; background: #A0522D; z-index: 2; }
+.layer-top { bottom: 120px; background: #CD853F; z-index: 3; height: 50px; }
+
+.icing {
+    position: absolute;
+    top: 25px;
+    left: -5px;
+    width: 260px;
+    height: 30px;
+    background: #fff;
+    border-radius: 50%;
+    z-index: 4;
+    box-shadow: 0 3px 0 #ddd;
+}
+
+/* CANDLES */
+.candles-container {
+    position: absolute;
+    top: -50px;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    z-index: 5;
+}
+
+.candle { position: relative; width: 15px; height: 50px; }
+.wax {
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(45deg, var(--retro-pink), var(--retro-pink) 5px, #fff 5px, #fff 10px);
+    border: 2px solid #333;
+}
+.wick {
+    width: 4px; height: 10px; background: #333;
+    margin: 0 auto; position: relative; top: -5px;
 }
 
 .flame {
-  font-size: 24px;
-  transition: all 0.3s;
-  animation: flicker 0.5s infinite;
-}
-
-.flame.lit {
-  opacity: 1;
-  transform: scale(1);
+    position: absolute;
+    top: -25px; left: 50%; transform: translateX(-50%);
+    width: 15px; height: 25px;
+    background: orange;
+    border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
+    background-image: linear-gradient(white, yellow, orange);
+    animation: flicker 0.5s infinite alternate;
+    opacity: 1;
+    transition: opacity 0.5s;
 }
 
 .flame.out {
-  opacity: 0;
-  transform: scale(0);
+    opacity: 0;
+    animation: none;
 }
 
+/* ANIMATIONS */
 @keyframes flicker {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-3px) scale(1.1); }
+    0% { transform: translateX(-50%) scale(1); }
+    100% { transform: translateX(-50%) scale(0.9) rotate(2deg); }
 }
 
-.wick {
-  width: 3px;
-  height: 20px;
-  background: #333;
-  margin-bottom: 5px;
+@keyframes vibrate {
+  0% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(1px, 1px); }
+  80% { transform: translate(1px, -1px); }
+  100% { transform: translate(0); }
 }
 
-.candle-body {
-  width: 15px;
-  height: 60px;
-  background: linear-gradient(to bottom, #ff6b9d, #ffc3d8);
-  border-radius: 8px 8px 0 0;
-  box-shadow: inset 0 -5px 10px rgba(0,0,0,0.2);
-}
-
-.cake-layer {
-  width: 100%;
-  height: 60px;
-  background: linear-gradient(to bottom, #8b4513, #654321);
-  border-radius: 10px;
-  margin-bottom: 5px;
-  position: relative;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.layer-1 { width: 280px; margin: 0 auto 5px; }
-.layer-2 { width: 300px; margin: 0 auto 5px; }
-.layer-3 { width: 320px; margin: 0 auto; height: 80px; }
-
-.frosting {
-  position: absolute;
-  top: -10px;
-  left: 0;
-  right: 0;
-  height: 20px;
-  background: linear-gradient(to bottom, #ffc3d8, #ff6b9d);
-  border-radius: 20px 20px 0 0;
-}
-
-.controls {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin: 30px 0;
-}
-
-.blow-btn, .stop-btn, .reset-btn {
-  padding: 15px 30px;
-  font-size: 1.1rem;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.blow-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.stop-btn {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
-}
-
-.reset-btn {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: white;
-}
-
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-.success-message {
-  font-size: 1.5rem;
-  color: #ffd700;
-  margin-top: 20px;
-  animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+@keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
