@@ -60,14 +60,11 @@ const PhotoGallery = ({ userType }) => {
 
         {/* ICONS GRID */}
         <div className="icons-view">
-             {/* Upload Icon (Only for Birthday Girl) */}
-             {userType === 'birthday-girl' && (
-                <label className="desktop-icon upload-icon">
-                    <div className="icon-img upload-img">⬆️</div>
-                    <span className="icon-text">{uploading ? 'Uploading...' : 'Add_New.exe'}</span>
-                    <input type="file" multiple accept="image/*" onChange={handleUpload} style={{display:'none'}} />
-                </label>
-             )}
+            <label className="desktop-icon upload-icon">
+                <div className="icon-img upload-img">⬆️</div>
+                <span className="icon-text">{uploading ? 'Uploading...' : 'Add_New.exe'}</span>
+                <input type="file" multiple accept="image/*" onChange={handleUpload} style={{display:'none'}} />
+            </label>
 
              {photos.map((photo, idx) => (
                  <div key={idx} className="desktop-icon" onClick={() => setSelectedPhoto(photo)}>

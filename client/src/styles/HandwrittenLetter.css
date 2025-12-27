@@ -4,37 +4,42 @@
     justify-content: center;
 }
 
+.letter-container {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
 .notepad-window {
     width: 100%;
     max-width: 600px;
+    /* Use 'vh' so it fits on mobile screens nicely */
+    height: 60vh; 
+    min-height: 300px;
     background: #ffffff;
     display: flex;
     flex-direction: column;
-    /* FIX: Fixed height so it doesn't grow over other elements */
-    height: 50vh; 
-    max-height: 500px;
+    border: 2px solid #000; /* Solid border for contrast */
 }
 
 .notepad-menubar {
-    background: var(--win-bg);
-    border-bottom: 1px solid var(--win-border-dark);
-    padding: 2px 5px;
-    font-family: var(--font-main);
+    background: #c0c0c0;
+    border-bottom: 1px solid #808080;
+    padding: 2px 8px;
+    font-family: 'Arial', sans-serif;
     font-size: 14px;
-    display: flex;
-    gap: 15px;
-    flex-shrink: 0; /* Prevents menu from shrinking */
+    color: black;
 }
 
 .notepad-content {
     background: #ffffff;
-    color: #000000;
-    font-family: var(--font-main);
+    color: #000000; /* Force black text */
+    font-family: 'Courier Prime', 'Courier New', monospace;
     font-size: 1.1rem;
-    line-height: 1.6;
-    padding: 15px;
-    /* FIX: Scroll logic */
+    line-height: 1.5;
+    padding: 20px;
+    /* This makes the text scrollable! */
     flex-grow: 1;
     overflow-y: auto; 
-    white-space: pre-wrap; /* Preserves text formatting */
+    white-space: pre-wrap;
 }
