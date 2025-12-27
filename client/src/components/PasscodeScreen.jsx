@@ -20,7 +20,7 @@ const PasscodeScreen = ({ setAuthenticated }) => {
   const handleSubmit = () => {
     if (input === CORRECT_CODE) {
       setAuthenticated(true);
-      navigate('/dashboard');
+      navigate('/navigation');
     } else {
       setError('ACCESS DENIED');
       setInput('');
