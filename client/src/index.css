@@ -1,47 +1,87 @@
+/* src/index.css */
 :root {
-  --bg-color: #fdf2f8; /* Soft pink background */
-  --card-bg: #ffffff;
-  --primary: #db2777; /* Dark pink */
-  --secondary: #fbcfe8; /* Light pink */
-  --text-main: #374151;
-  --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Y2K Brownish Palette */
+  --mocha-dark: #4A3121;
+  --mocha-mid: #8D6E63;
+  --latte-beige: #D7CCC8;
+  --cream-light: #FFF8E1;
+  --accent-gold: #FFD54F;
+  --accent-orange: #FF8A65;
+
+  /* Y2K Borders & Effects */
+  --border-chunky: 4px solid var(--mocha-dark);
+  --border-pixel: 2px dashed var(--mocha-mid);
+  --box-shadow-hard: 6px 6px 0px var(--mocha-dark);
+  --gradient-glossy: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 51%, rgba(0,0,0,0.2) 100%);
+  
+  /* Retro Web Font stack */
+  --font-y2k: 'Verdana', 'Arial Black', sans-serif;
 }
 
 body {
   margin: 0;
-  font-family: var(--font-main);
-  background-color: var(--bg-color);
-  color: var(--text-main);
-  line-height: 1.6;
+  font-family: var(--font-y2k);
+  /* Retro patterned background */
+  background-color: var(--latte-beige);
+  background-image: 
+    linear-gradient(45deg, var(--mocha-mid) 25%, transparent 25%), 
+    linear-gradient(-45deg, var(--mocha-mid) 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, var(--mocha-mid) 75%), 
+    linear-gradient(-45deg, transparent 75%, var(--mocha-mid) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  color: var(--mocha-dark);
+  cursor: crosshair; /* Retro cursor */
 }
 
+/* Funky Main Titles */
 h1 {
   text-align: center;
-  color: var(--primary);
-  font-size: 2rem;
-  margin: 2rem 0;
-}
-
-/* Mobile Friendly Container */
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-button {
-  background: var(--primary);
-  color: white;
-  border: none;
+  color: var(--mocha-dark);
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0px var(--accent-gold);
+  background: var(--cream-light);
+  border: var(--border-chunky);
+  display: inline-block;
   padding: 10px 20px;
-  border-radius: 25px;
+  /* Center the block */
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%) skew(-5deg);
+  margin-top: 30px;
+}
+
+/* Global Buttons - Y2K Jelly Style */
+button {
+  font-family: var(--font-y2k);
+  background-color: var(--mocha-mid);
+  background-image: var(--gradient-glossy);
+  color: var(--cream-light);
+  border: 3px solid var(--mocha-dark);
+  padding: 12px 24px;
+  border-radius: 30px; /* Super rounded */
   font-weight: bold;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: transform 0.2s;
+  box-shadow: 3px 3px 0px var(--mocha-dark);
+  transition: all 0.1s;
 }
 
 button:hover {
-  transform: scale(1.05);
-  background: #be185d;
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px var(--mocha-dark);
+  background-color: var(--accent-orange);
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Add some sparkle animation */
+@keyframes sparkle {
+  0% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.3; transform: scale(0.8); }
 }

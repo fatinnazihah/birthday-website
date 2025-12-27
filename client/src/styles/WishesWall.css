@@ -1,62 +1,129 @@
+/* src/styles/WishesWall.css */
 .wishes-container {
   padding: 20px;
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
-/* Form Styling */
+/* --- Y2K FORM STYLING --- */
 .wish-form {
-  background: white;
+  background: var(--cream-light);
+  border: var(--border-chunky);
   padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  /* Making it look like an old OS window */
+  box-shadow: var(--box-shadow-hard);
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-bottom: 3rem;
+  margin: 2rem auto 4rem auto; /* Center horizontally */
   max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  position: relative;
+}
+
+/* Fake title bar for the form window */
+.wish-form::before {
+  content: '★ SEND_A_WISH.exe ★';
+  position: absolute;
+  top: -20px;
+  left: -4px;
+  right: -4px;
+  height: 25px;
+  background: var(--mocha-dark);
+  color: var(--accent-gold);
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  border: var(--border-chunky);
+  border-bottom: none;
 }
 
 .wish-form input, 
 .wish-form textarea {
   padding: 12px;
-  border: 2px solid #f3f4f6;
-  border-radius: 8px;
-  font-size: 1rem;
+  border: var(--border-pixel);
+  background-color: #FFF;
+  font-family: 'Courier New', monospace; /* Retro terminal font for inputs */
+  font-weight: bold;
+  color: var(--mocha-dark);
+}
+.wish-form input:focus, .wish-form textarea:focus {
+  outline: none;
+  border: 2px solid var(--accent-orange);
+  background-color: var(--cream-light);
 }
 
-/* The Grid Layout - Fixes Mobile View */
+/* --- GRID & CARDS --- */
 .wishes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* responsive magic */
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  padding: 20px;
+  background: rgba(255,255,255,0.5); /* Semi-transparent backing */
+  border: var(--border-pixel);
 }
 
 .wish-card {
-  background: white;
+  background: var(--cream-light);
   padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border: var(--border-chunky);
+  box-shadow: 4px 4px 0px var(--mocha-mid);
   position: relative;
-  transition: transform 0.3s ease;
-  border: 1px solid var(--secondary);
+  transition: transform 0.2s;
+  /* Add Y2K decorative corners using gradients */
+  background-image: 
+    linear-gradient(135deg, var(--accent-gold) 10px, transparent 10px),
+    linear-gradient(225deg, var(--accent-gold) 10px, transparent 10px),
+    linear-gradient(315deg, var(--accent-gold) 10px, transparent 10px),
+    linear-gradient(45deg, var(--accent-gold) 10px, transparent 10px);
+  background-position: top left, top right, bottom right, bottom left;
+  background-size: 50% 50%;
+  background-repeat: no-repeat;
 }
 
 .wish-card:hover {
-  transform: translateY(-5px);
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px var(--mocha-mid);
+  z-index: 2;
 }
 
+/* Alternating slight rotations for chaotic feel */
+.wish-card:nth-child(even) { transform: rotate(2deg); }
+.wish-card:nth-child(odd) { transform: rotate(-2deg); }
+.wish-card:nth-child(even):hover { transform: rotate(2deg) translate(-3px, -3px); }
+.wish-card:nth-child(odd):hover { transform: rotate(-2deg) translate(-3px, -3px); }
+
+
 .wish-message {
-  font-style: italic;
+  font-family: 'Comic Sans MS', 'Arial', cursive; /* It had to be done */
   font-size: 1.1rem;
-  color: #4b5563;
+  border-bottom: var(--border-pixel);
+  padding-bottom: 15px;
+  margin: 15px 0;
 }
 
 .wish-author {
   font-weight: bold;
   text-align: right;
-  color: var(--primary);
-  margin-top: 10px;
+  color: var(--mocha-dark);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.wish-emoji {
+  position: absolute;
+  top: -15px;
+  right: -10px;
+  font-size: 2rem;
+  filter: drop-shadow(2px 2px 0px var(--mocha-mid));
+  animation: sparkle 2s infinite ease-in-out;
+}
+
+.no-wishes {
+    text-align: center;
+    font-weight: bold;
+    background: var(--cream-light);
+    padding: 20px;
+    border: var(--border-pixel);
 }

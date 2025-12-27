@@ -1,3 +1,4 @@
+/* src/styles/PhotoGallery.css */
 .gallery-container {
   padding: 20px;
   max-width: 1200px;
@@ -6,60 +7,141 @@
 
 .upload-section {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: var(--mocha-mid);
+  border: var(--border-chunky);
+  /* Tech pattern overlay */
+  background-image: 
+      linear-gradient(var(--mocha-dark) 2px, transparent 2px),
+      linear-gradient(90deg, var(--mocha-dark) 2px, transparent 2px);
+  background-size: 20px 20px, 20px 20px;
+  background-color: var(--mocha-mid); /* fallback */
 }
 
+/* Making the label look like a huge chunky button */
+.upload-btn {
+  display: inline-block;
+  background-color: var(--accent-orange);
+  background-image: var(--gradient-glossy);
+  color: var(--mocha-dark);
+  border: 4px solid var(--mocha-dark);
+  padding: 15px 40px;
+  border-radius: 50px;
+  font-weight: 900;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 6px 6px 0px var(--mocha-dark);
+  transition: all 0.2s;
+}
+
+.upload-btn:hover {
+  transform: translate(3px, 3px);
+  box-shadow: 3px 3px 0px var(--mocha-dark);
+  background-color: var(--accent-gold);
+}
+
+/* --- PHOTOS GRID --- */
 .photos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Auto-responsive */
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  padding: 25px;
+  background: var(--cream-light);
+  border: var(--border-chunky);
 }
 
 .photo-card {
-  aspect-ratio: 1; /* Forces square shape */
-  overflow: hidden;
-  border-radius: 12px;
-  cursor: pointer;
+  aspect-ratio: 1;
   position: relative;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  border: var(--border-chunky);
+  padding: 5px; /* White frame area */
+  background: white;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
 }
+
+/* Pixelated corners for photos */
+.photo-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 2px dashed var(--accent-gold);
+    pointer-events: none;
+}
+
 
 .photo-card img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Prevents stretching */
+  object-fit: cover;
+  /* Give images a slight retro grainy filter */
+  filter: sepia(20%) contrast(110%);
   transition: transform 0.3s;
 }
 
 .photo-card:hover img {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
-/* Modal for full screen */
+.photo-overlay {
+    opacity: 0;
+    position: absolute;
+    top:50%; left:50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    transition: opacity 0.2s;
+    z-index: 2;
+}
+
+.photo-card:hover .photo-overlay {
+    opacity: 1;
+}
+
+
+/* --- MODAL (Pop-up) --- */
 .photo-modal {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8);
+  background: rgba(74, 49, 33, 0.9); /* Dark brown transparent background */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  /* Scanline effect overlay */
+  background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
+  background-size: 100% 4px;
+}
+
+.modal-content {
+    position: relative;
+    padding: 10px;
+    background: var(--cream-light);
+    border: var(--border-chunky);
+    box-shadow: var(--box-shadow-hard);
 }
 
 .modal-content img {
-  max-width: 90%;
-  max-height: 90vh;
-  border-radius: 8px;
+  max-width: 90vw;
+  max-height: 85vh;
+  border: 2px solid var(--mocha-dark);
+  display: block;
 }
 
 .close-modal {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background: white;
-  color: black;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 20px;
+  top: -25px;
+  right: -25px;
+  background: var(--accent-orange);
+  color: var(--mocha-dark);
+  border: var(--border-chunky);
+  font-weight: bold;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
