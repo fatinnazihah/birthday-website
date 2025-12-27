@@ -17,6 +17,7 @@ html, body {
   width: 100%;
   /* Force the brown theme with !important */
   background-color: var(--retro-beige) !important;
+  background-image:none;
   background-size: 50px 50px !important;
   font-family: var(--font-pixel);
   color: black;
