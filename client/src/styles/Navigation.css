@@ -1,33 +1,102 @@
-/* Start Menu Styling */
-.start-menu {
-    position: fixed;
-    bottom: 45px; /* Height of taskbar */
-    left: 5px;
-    width: 200px;
+/* src/styles/Navigation.css */
+
+.dashboard-container {
+    min-height: 100vh;
+    padding-bottom: 60px; /* Space for taskbar */
+    position: relative;
+}
+
+/* --- RESPONSIVE TASKBAR --- */
+.y2k-taskbar {
+    position: fixed; /* Fixed so it stays at bottom */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 45px;
+    z-index: 9999;
+    background: #c0c0c0;
+    border-top: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+    box-sizing: border-box; /* Prevents horizontal scroll */
+}
+
+.start-button {
+    font-family: var(--font-pixel);
+    font-weight: bold;
+    padding: 2px 10px;
     background: #c0c0c0;
     border-top: 2px solid #fff;
     border-left: 2px solid #fff;
     border-right: 2px solid #000;
     border-bottom: 2px solid #000;
     display: flex;
-    z-index: 200;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 14px;
+}
+.start-button.active {
+    border-top: 2px solid #000;
+    border-left: 2px solid #000;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    background: #a0a0a0;
+}
+
+/* Hide shortcuts on tiny screens, show on larger */
+.taskbar-shortcuts {
+    display: flex;
+    gap: 5px;
+    flex-grow: 1;
+}
+
+@media (max-width: 500px) {
+    .taskbar-shortcuts button {
+        display: none; /* Hide buttons on mobile to save space */
+    }
+    .system-time {
+        font-size: 12px;
+    }
+}
+
+.system-time {
+    margin-left: auto;
+    padding: 2px 8px;
+    background: #c0c0c0;
+    border: 2px inset;
+    font-family: var(--font-pixel);
+    font-size: 14px;
+}
+
+/* --- START MENU POSITIONING --- */
+.start-menu {
+    position: fixed;
+    bottom: 48px; /* Just above taskbar */
+    left: 5px;
+    width: 200px;
+    background: #c0c0c0;
+    border: 2px outset #fff;
+    display: flex;
+    z-index: 10000;
     box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
 }
 
 .start-sidebar {
     width: 25px;
-    background: #000080; /* Classic Navy */
+    background: #000080;
     color: white;
     display: flex;
     align-items: flex-end;
-    padding-bottom: 5px;
 }
 
 .vertical-text {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    font-weight: bold;
     padding: 5px;
+    font-size: 14px;
 }
 
 .start-items {
@@ -40,31 +109,24 @@
     padding: 10px;
     cursor: pointer;
     font-family: var(--font-pixel);
-    font-size: 1.1rem;
+    font-size: 16px;
+    border-bottom: 1px dotted #888;
 }
-
 .start-item:hover {
     background: #000080;
     color: white;
 }
 
-.divider {
-    height: 1px;
-    background: gray;
-    border-bottom: 1px solid white;
-    margin: 5px 0;
+/* --- CONTENT SPACING --- */
+.dashboard-content {
+    padding: 10px;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-/* Taskbar Shortcuts */
-.taskbar-shortcuts button {
-    background: none;
-    border: 1px solid transparent;
-    cursor: pointer;
-    font-family: var(--font-pixel);
-    padding: 2px 5px;
-}
-.taskbar-shortcuts button:hover {
-    border: 1px solid gray;
-    background: #ddd;
-    box-shadow: inset 1px 1px 0 white;
+/* Responsive Windows */
+.y2k-window {
+    width: 100%;
+    margin-bottom: 20px;
+    box-sizing: border-box;
 }
