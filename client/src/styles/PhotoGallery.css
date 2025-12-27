@@ -1,6 +1,8 @@
 .gallery-explorer {
     background: #d4d0c8;
-    height: 400px;
+    /* FIX: Use viewport height units so it fits on screen */
+    height: 60vh; 
+    max-height: 500px;
     display: flex;
     flex-direction: column;
     border: 1px solid #fff;
@@ -25,6 +27,8 @@
     background: white;
     border: 2px inset #d4d0c8;
     margin: 2px;
+    /* FIX: Ensure body doesn't overflow parent */
+    overflow: hidden; 
 }
 
 .explorer-sidebar {
@@ -44,7 +48,8 @@
     flex-wrap: wrap;
     align-content: flex-start;
     gap: 15px;
-    overflow-y: auto;
+    /* FIX: Scroll ONLY the icons area */
+    overflow-y: auto; 
 }
 
 .desktop-icon {

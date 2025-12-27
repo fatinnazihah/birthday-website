@@ -15,7 +15,6 @@ const BirthdayCake = ({ onComplete }) => {
 
   const totalCandles = 5; 
 
-  // Clean up on unmount
   useEffect(() => {
     return () => {
       cancelAnimationFrame(animationFrameRef.current);
@@ -40,24 +39,30 @@ const BirthdayCake = ({ onComplete }) => {
 
   const startListening = async () => {
     try {
-      // 1. Initialize Audio Context (Standard + Webkit for Safari)
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       audioContextRef.current = new AudioContext();
 
-      // 2. CRITICAL: Resume context if it's suspended (browsers block this by default)
       if (audioContextRef.current.state === 'suspended') {
         await audioContextRef.current.resume();
       }
 
       startMusic();
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // THE MAGIC FIX: Disable "smart" audio filters so we can hear the wind/blowing!
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+            echoCancellation: false,
+            noiseSuppression: false,
+            autoGainControl: false
+        }
+      });
+      
       setIsListening(true);
 
       analyserRef.current = audioContextRef.current.createAnalyser();
       sourceRef.current = audioContextRef.current.createMediaStreamSource(stream);
       
-      analyserRef.current.fftSize = 256;
+      analyserRef.current.fftSize = 512;
       const bufferLength = analyserRef.current.frequencyBinCount;
       dataArrayRef.current = new Uint8Array(bufferLength);
 
@@ -65,7 +70,7 @@ const BirthdayCake = ({ onComplete }) => {
       detectBlow();
     } catch (err) {
       console.error("Mic Error:", err);
-      alert("Microphone failed to start. Please check permissions or use the manual button.");
+      alert("Microphone failed. Please use the manual button below!");
     }
   };
 
@@ -75,16 +80,19 @@ const BirthdayCake = ({ onComplete }) => {
     animationFrameRef.current = requestAnimationFrame(detectBlow);
     analyserRef.current.getByteFrequencyData(dataArrayRef.current);
 
+    // Blowing produces low-frequency noise. We focus on that.
+    const lowerFrequencies = dataArrayRef.current.slice(0, 15); // Focus on bass/wind
     let sum = 0;
-    for (let i = 0; i < dataArrayRef.current.length; i++) {
-      sum += dataArrayRef.current[i];
+    for (let i = 0; i < lowerFrequencies.length; i++) {
+      sum += lowerFrequencies[i];
     }
-    const average = sum / dataArrayRef.current.length;
+    const average = sum / lowerFrequencies.length;
     
-    setMicLevel(Math.min(100, average * 3)); // Boost visual sensitivity
+    // Update visualizer
+    setMicLevel(Math.min(100, average * 1.5)); 
 
-    // 0.08 threshold was too high for some mics. 30 (on 0-255 scale) is better.
-    if (average > 30 && candlesBlown < totalCandles) {
+    // Threshold: If volume of low freq is high, it's a blow
+    if (average > 40 && candlesBlown < totalCandles) {
        setCandlesBlown(prev => Math.min(prev + 0.1, totalCandles));
     }
   };
@@ -100,7 +108,7 @@ const BirthdayCake = ({ onComplete }) => {
           cancelAnimationFrame(animationFrameRef.current);
           if (onComplete) onComplete();
       }
-  }, [candlesBlown, totalCandles]); // Removed onComplete from dependency to avoid loop
+  }, [candlesBlown, totalCandles]); 
 
   return (
     <div className="cake-wrapper">
@@ -134,7 +142,7 @@ const BirthdayCake = ({ onComplete }) => {
                 {isListening && (
                     <div className="mic-meter-container">
                         <div className="mic-meter-fill" style={{width: `${micLevel}%`}}></div>
-                        <span className="mic-label">MIC INPUT LEVEL</span>
+                        <span className="mic-label">BLOW STRENGTH</span>
                     </div>
                 )}
 
