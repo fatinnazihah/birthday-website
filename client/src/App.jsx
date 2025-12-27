@@ -1,51 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-
-// Import your EXACT file names
 import PasscodeScreen from './components/PasscodeScreen';
 import Navigation from './components/Navigation';
-
-// Make sure your App.css is empty or just has global styles, 
-// otherwise old styles might clash with the new Y2K theme.
-import './App.css'; 
+import './App.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Default to null, will be set by PasscodeScreen
+  const [userType, setUserType] = useState(null); 
 
-  // Keep your session storage logic so refreshing doesn't lock you out!
   useEffect(() => {
     const authStatus = sessionStorage.getItem('authenticated');
+    const storedType = sessionStorage.getItem('userType');
     if (authStatus === 'true') {
       setIsAuthenticated(true);
+      setUserType(storedType || 'guest');
     }
   }, []);
 
-  const handleAuthentication = () => {
-    setIsAuthenticated(true);
-    sessionStorage.setItem('authenticated', 'true');
+  const handleLogin = (type) => {
+      setIsAuthenticated(true);
+      setUserType(type);
+      sessionStorage.setItem('authenticated', 'true');
+      sessionStorage.setItem('userType', type);
   };
 
   return (
     <Router>
       <Routes>
-        {/* Route 1: The Lock Screen */}
         <Route 
           path="/" 
           element={
             isAuthenticated ? (
               <Navigate to="/dashboard" />
             ) : (
-              <PasscodeScreen setAuthenticated={handleAuthentication} />
+              <PasscodeScreen 
+                setAuthenticated={setIsAuthenticated} 
+                setUserType={handleLogin} // Pass this function!
+              />
             )
           } 
         />
-
-        {/* Route 2: The Main Dashboard (Your Navigation component) */}
         <Route 
           path="/dashboard" 
           element={
             isAuthenticated ? (
-              <Navigation userType="guest" setAuthenticated={setIsAuthenticated} />
+              <Navigation 
+                userType={userType} 
+                setAuthenticated={setIsAuthenticated} 
+              />
             ) : (
               <Navigate to="/" />
             )

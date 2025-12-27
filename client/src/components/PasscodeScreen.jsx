@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/PasscodeScreen.css';
 
-const PasscodeScreen = ({ setAuthenticated }) => {
+const PasscodeScreen = ({ setAuthenticated, setUserType }) => {
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const CORRECT_CODE = "1234"; // Change this to your real code
+  
+  // THE MASTER CODE
+  const VIP_CODE = "281204"; 
 
   const handleBtnClick = (value) => {
     setError('');
-    if (input.length < 4) {
+    if (input.length < 6) { // Increased to 6 digits
       setInput(prev => prev + value);
     }
   };
@@ -18,13 +20,20 @@ const PasscodeScreen = ({ setAuthenticated }) => {
   const handleClear = () => setInput('');
 
   const handleSubmit = () => {
-    if (input === CORRECT_CODE) {
+    if (input === VIP_CODE) {
       setAuthenticated(true);
-      navigate('/navigation');
+      setUserType('birthday-girl'); // Full Access
+      navigate('/dashboard');
     } else {
       setError('ACCESS DENIED');
       setInput('');
     }
+  };
+
+  const handleGuestEntry = () => {
+      setAuthenticated(true);
+      setUserType('guest'); // Limited Access
+      navigate('/dashboard');
   };
 
   const KeypadBtn = ({ val, label }) => (
@@ -39,8 +48,8 @@ const PasscodeScreen = ({ setAuthenticated }) => {
       <div className="nokia-phone">
         <div className="nokia-screen-bezel">
             <div className="nokia-screen">
-                <div className="signal-bar">📶 T-Mobile</div>
-                <h2 className="enter-code-text">ENTER CODE:</h2>
+                <div className="signal-bar">📶 T-Mobile <span style={{float:'right'}}>🔋</span></div>
+                <h2 className="enter-code-text">ENTER PASSWORD:</h2>
                 <div className="code-display">
                     {input.split('').map((_, i) => <span key={i}>*</span>)}
                     {input.length === 0 && <span className="blink-cursor">_</span>}
@@ -55,18 +64,20 @@ const PasscodeScreen = ({ setAuthenticated }) => {
                 <button className="nokia-control-btn enter-btn" onClick={handleSubmit}>OK</button>
             </div>
             <div className="num-pad-grid">
-                <KeypadBtn val="1" label="voicemail"/>
-                <KeypadBtn val="2" label="abc"/>
-                <KeypadBtn val="3" label="def"/>
-                <KeypadBtn val="4" label="ghi"/>
-                <KeypadBtn val="5" label="jkl"/>
-                <KeypadBtn val="6" label="mno"/>
-                <KeypadBtn val="7" label="pqrs"/>
-                <KeypadBtn val="8" label="tuv"/>
-                <KeypadBtn val="9" label="wxyz"/>
-                <KeypadBtn val="*" label="+"/>
-                <KeypadBtn val="0" label=" "/>
-                <KeypadBtn val="#" label="⇧"/>
+                {[1,2,3,4,5,6,7,8,9].map(n => <KeypadBtn key={n} val={n} />)}
+                <KeypadBtn val="*" />
+                <KeypadBtn val="0" />
+                <KeypadBtn val="#" />
+            </div>
+            
+            {/* Guest Link */}
+            <div style={{marginTop: '20px', textAlign: 'center'}}>
+                <p className="guest-link" onClick={handleGuestEntry}>
+                    Don't know the code? <br/>
+                    <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}}>
+                        Click here to enter as Guest
+                    </span>
+                </p>
             </div>
         </div>
       </div>
