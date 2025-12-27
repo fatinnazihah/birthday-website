@@ -3,6 +3,7 @@ const cors = require('cors');
 const admin = require('firebase-admin');
 const multer = require('multer');
 require('dotenv').config();
+const path = require('path');
 
 // Initialize Firebase Admin
 const serviceAccount = require('./serviceAccountKey.json');
@@ -21,11 +22,15 @@ const upload = multer({ storage: multer.memoryStorage() });
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Health check
 app.get('/', (req, res) => {
   res.json({ message: 'Birthday Website API is running! 🎉' });
 });
+
+// Catch-all handler for React
+app.get('*', (req, res) => {  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));});
 
 // Get all wishes
 app.get('/api/wishes', async (req, res) => {
