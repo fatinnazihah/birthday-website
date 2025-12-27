@@ -1,53 +1,58 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
+// Import your EXACT file names
 import PasscodeScreen from './components/PasscodeScreen';
-import BirthdayCake from './components/BirthdayCake';
-import WishesWall from './components/WishesWall';
-import HandwrittenLetter from './components/HandwrittenLetter';
-import PhotoGallery from './components/PhotoGallery';
 import Navigation from './components/Navigation';
-import './App.css';
+
+// Make sure your App.css is empty or just has global styles, 
+// otherwise old styles might clash with the new Y2K theme.
+import './App.css'; 
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userType, setUserType] = useState(null); // 'birthday-girl' or 'guest'
-  const [currentPage, setCurrentPage] = useState('cake');
 
+  // Keep your session storage logic so refreshing doesn't lock you out!
   useEffect(() => {
-    // Check if already authenticated
     const authStatus = sessionStorage.getItem('authenticated');
-    const type = sessionStorage.getItem('userType');
     if (authStatus === 'true') {
       setIsAuthenticated(true);
-      setUserType(type);
     }
   }, []);
 
-  const handleAuthentication = (type) => {
+  const handleAuthentication = () => {
     setIsAuthenticated(true);
-    setUserType(type);
     sessionStorage.setItem('authenticated', 'true');
-    sessionStorage.setItem('userType', type);
   };
 
-  if (!isAuthenticated) {
-    return <PasscodeScreen onAuthenticate={handleAuthentication} />;
-  }
-
   return (
-    <div className="app">
-      <Navigation 
-        currentPage={currentPage} 
-        setCurrentPage={setCurrentPage}
-        userType={userType}
-      />
-      
-      <div className="content">
-        {currentPage === 'cake' && <BirthdayCake />}
-        {currentPage === 'wishes' && <WishesWall userType={userType} />}
-        {currentPage === 'letter' && userType === 'birthday-girl' && <HandwrittenLetter />}
-        {currentPage === 'photos' && userType === 'birthday-girl' && <PhotoGallery />}
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        {/* Route 1: The Lock Screen */}
+        <Route 
+          path="/" 
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <PasscodeScreen setAuthenticated={handleAuthentication} />
+            )
+          } 
+        />
+
+        {/* Route 2: The Main Dashboard (Your Navigation component) */}
+        <Route 
+          path="/dashboard" 
+          element={
+            isAuthenticated ? (
+              <Navigation userType="guest" setAuthenticated={setIsAuthenticated} />
+            ) : (
+              <Navigate to="/" />
+            )
+          } 
+        />
+      </Routes>
+    </Router>
   );
 }
 
