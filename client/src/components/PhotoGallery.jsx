@@ -46,7 +46,7 @@ const PhotoGallery = ({ userType }) => {
       </div>
       <div className="address-bar-row">
           <span>Address</span>
-          <div className="address-input">C:\My Documents\Birthday_Pics</div>
+          <div className="address-input">C:\My Documents\Sonia_Pics</div>
       </div>
 
       <div className="explorer-body">

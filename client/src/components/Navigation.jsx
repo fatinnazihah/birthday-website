@@ -42,7 +42,7 @@ const Navigation = ({ userType, setAuthenticated }) => {
               <span role="img" aria-label="flag">🏁</span> Start
           </div>
           <div className="system-time">
-              {userType === 'birthday-girl' ? 'Logged in: Admin' : 'Logged in: Guest'}
+              {userType === 'birthday-girl' ? 'Logged in: Sonia' : 'Logged in: Guest'}
           </div>
       </nav>
 
@@ -82,7 +82,7 @@ const Navigation = ({ userType, setAuthenticated }) => {
             <div className="unlocked-content">
                 
                 <div className="y2k-divider">
-                    <marquee>*** WELCOME TO THE PARTY ***</marquee>
+                    <marquee>*** WELCOME TO THE SONIA'S DIGITAL BIRTHDAY PARTY! ***</marquee>
                 </div>
 
                 {/* SECTION 3: LETTER (Only for Birthday Girl) */}
@@ -109,7 +109,7 @@ const Navigation = ({ userType, setAuthenticated }) => {
                 <section id="gallery-section">
                      <div className="y2k-window">
                         <div className="title-bar">
-                            <div className="title-text">📁 My Pictures - C:\Users\BirthdayGirl</div>
+                            <div className="title-text">📁 My Pictures - C:\Users\Sonia</div>
                             <div className="title-controls"><div className="control-box">X</div></div>
                         </div>
                         <div className="window-content">
