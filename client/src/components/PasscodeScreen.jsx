@@ -7,14 +7,11 @@ const PasscodeScreen = ({ setAuthenticated, setUserType }) => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   
-  // THE MASTER CODE
   const VIP_CODE = "281204"; 
 
   const handleBtnClick = (value) => {
     setError('');
-    if (input.length < 6) { // Increased to 6 digits
-      setInput(prev => prev + value);
-    }
+    if (input.length < 6) setInput(prev => prev + value);
   };
 
   const handleClear = () => setInput('');
@@ -22,64 +19,98 @@ const PasscodeScreen = ({ setAuthenticated, setUserType }) => {
   const handleSubmit = () => {
     if (input === VIP_CODE) {
       setAuthenticated(true);
-      setUserType('birthday-girl'); // Full Access
+      setUserType('birthday-girl');
       navigate('/dashboard');
     } else {
-      setError('ACCESS DENIED');
+      setError('WRONG CODE');
       setInput('');
     }
   };
 
   const handleGuestEntry = () => {
       setAuthenticated(true);
-      setUserType('guest'); // Limited Access
+      setUserType('guest');
       navigate('/dashboard');
   };
 
-  const KeypadBtn = ({ val, label }) => (
-    <button className="nokia-btn" onClick={() => handleBtnClick(val)}>
-      <span className="btn-val">{val}</span>
-      {label && <span className="btn-label">{label}</span>}
+  const KeypadBtn = ({ val, letters }) => (
+    <button className="nokia-key" onClick={() => handleBtnClick(val)}>
+      <div className="key-num">{val}</div>
+      {letters && <div className="key-letters">{letters}</div>}
     </button>
   );
 
   return (
-    <div className="passcode-container center-screen">
-      <div className="nokia-phone">
-        <div className="nokia-screen-bezel">
-            <div className="nokia-screen">
-                <div className="signal-bar">📶 T-Mobile <span style={{float:'right'}}>🔋</span></div>
-                <h2 className="enter-code-text">ENTER PASSWORD:</h2>
-                <div className="code-display">
-                    {input.split('').map((_, i) => <span key={i}>*</span>)}
-                    {input.length === 0 && <span className="blink-cursor">_</span>}
-                </div>
-                {error && <div className="error-msg blink-text">{error}</div>}
-            </div>
-        </div>
+    <div className="passcode-container">
+      <div className="nokia-3310">
         
-        <div className="nokia-keypad">
-            <div className="control-row">
-                <button className="nokia-control-btn clear-btn" onClick={handleClear}>C</button>
-                <button className="nokia-control-btn enter-btn" onClick={handleSubmit}>OK</button>
-            </div>
-            <div className="num-pad-grid">
-                {[1,2,3,4,5,6,7,8,9].map(n => <KeypadBtn key={n} val={n} />)}
-                <KeypadBtn val="*" />
-                <KeypadBtn val="0" />
-                <KeypadBtn val="#" />
-            </div>
-            
-            {/* Guest Link */}
-            <div style={{marginTop: '20px', textAlign: 'center'}}>
-                <p className="guest-link" onClick={handleGuestEntry}>
-                    Don't know the code? <br/>
-                    <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}}>
-                        Click here to enter as Guest
-                    </span>
-                </p>
+        {/* TOP SPEAKER SLITS */}
+        <div className="speaker-holes">
+            <span></span><span></span><span></span>
+        </div>
+
+        {/* SCREEN AREA */}
+        <div className="screen-frame">
+            <div className="nokia-screen">
+                <div className="status-bar">
+                    <span>📶</span>
+                    <span>🔋</span>
+                </div>
+                <div className="screen-content">
+                    <p style={{fontSize: '14px', marginBottom: '5px'}}>Enter Code:</p>
+                    <div className="input-display">
+                        {input.split('').map((_, i) => <span key={i}>*</span>)}
+                        {input.length === 0 && <span className="blink">_</span>}
+                    </div>
+                    {error && <div className="error-msg">{error}</div>}
+                </div>
+                <div className="soft-keys">
+                    <span>Menu</span>
+                    <span>Back</span>
+                </div>
             </div>
         </div>
+
+        {/* LOGO */}
+        <div className="nokia-logo">NOKIA</div>
+
+        {/* CONTROLS (Navi Key + C + Arrows) */}
+        <div className="control-cluster">
+            <button className="c-btn" onClick={handleClear}>C</button>
+            <button className="navi-key" onClick={handleSubmit}>
+                <div className="navi-line"></div>
+            </button>
+            <div className="arrows-dummy">
+                <div className="arr-up">▲</div>
+                <div className="arr-down">▼</div>
+            </div>
+        </div>
+
+        {/* NUMBER PAD */}
+        <div className="keypad-grid">
+            <KeypadBtn val="1" letters="" />
+            <KeypadBtn val="2" letters="abc" />
+            <KeypadBtn val="3" letters="def" />
+            <KeypadBtn val="4" letters="ghi" />
+            <KeypadBtn val="5" letters="jkl" />
+            <KeypadBtn val="6" letters="mno" />
+            <KeypadBtn val="7" letters="pqrs" />
+            <KeypadBtn val="8" letters="tuv" />
+            <KeypadBtn val="9" letters="wxyz" />
+            <KeypadBtn val="*" letters="+" />
+            <KeypadBtn val="0" letters=" " />
+            <KeypadBtn val="#" letters="⇧" />
+        </div>
+
+        {/* BOTTOM MIC HOLE */}
+        <div className="mic-hole"></div>
+
+      </div>
+
+      <div className="guest-link-container">
+         <p className="guest-link" onClick={handleGuestEntry}>
+            ( Don't know the code? Enter as Guest )
+         </p>
       </div>
     </div>
   );
