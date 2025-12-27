@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/BirthdayCake.css';
 
-const BirthdayCake = () => {
+const BirthdayCake = ({ onComplete }) => {
   const [candlesBlown, setCandlesBlown] = useState(0);
   const [isListening, setIsListening] = useState(false);
-  const [micPermission, setMicPermission] = useState(false);
+  const [micLevel, setMicLevel] = useState(0); // Visualizer state
   
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
@@ -16,17 +16,15 @@ const BirthdayCake = () => {
 
   useEffect(() => {
     return () => {
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
+      if (audioContextRef.current) audioContextRef.current.close();
       stopMusic();
     };
   }, []);
 
+  // --- AUDIO LOGIC ---
   const startMusic = () => {
       if(audioPlayerRef.current) {
           audioPlayerRef.current.volume = 0.5;
-          // Try to play, but handle browser autoplay blocks
           const playPromise = audioPlayerRef.current.play();
           if (playPromise !== undefined) {
               playPromise.catch(error => console.log("Audio play failed:", error));
@@ -43,59 +41,50 @@ const BirthdayCake = () => {
 
   const startListening = async () => {
     try {
-      // 1. Start Music First (User interaction allowed)
       startMusic();
-
-      // 2. Request Mic
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      setMicPermission(true);
       setIsListening(true);
 
-      // 3. Setup Audio Analysis
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
       analyserRef.current = audioContextRef.current.createAnalyser();
       sourceRef.current = audioContextRef.current.createMediaStreamSource(stream);
       
-      analyserRef.current.fftSize = 512; 
+      analyserRef.current.fftSize = 256;
       const bufferLength = analyserRef.current.frequencyBinCount;
       dataArrayRef.current = new Uint8Array(bufferLength);
 
       sourceRef.current.connect(analyserRef.current);
       detectBlow();
-
     } catch (err) {
       console.error("Mic Error:", err);
-      // Even if mic fails, let music play so they can manual blow
-      startMusic(); 
-      alert("Microphone not found or blocked! Use the 'Blow' button instead.");
+      alert("Microphone blocked? Use the manual button below!");
     }
   };
 
   const detectBlow = () => {
     if (!analyserRef.current || !isListening) return;
-    
-    // Stop loop if candles are done
-    if (candlesBlown >= totalCandles) return; 
+    if (candlesBlown >= totalCandles) return;
 
     requestAnimationFrame(detectBlow);
-    analyserRef.current.getByteTimeDomainData(dataArrayRef.current);
+    analyserRef.current.getByteFrequencyData(dataArrayRef.current);
 
+    // Calculate volume
     let sum = 0;
     for (let i = 0; i < dataArrayRef.current.length; i++) {
-      const value = (dataArrayRef.current[i] - 128) / 128; 
-      sum += value * value;
+      sum += dataArrayRef.current[i];
     }
-    const rms = Math.sqrt(sum / dataArrayRef.current.length);
+    const average = sum / dataArrayRef.current.length;
+    
+    // Update visualizer (0 to 100 scale)
+    setMicLevel(Math.min(100, average * 2)); 
 
-    // FIX: Lower threshold (0.02 is much easier to trigger)
-    const BLOW_THRESHOLD = 0.02; 
-
-    if (rms > BLOW_THRESHOLD) {
-       setCandlesBlown(prev => Math.min(prev + 0.2, totalCandles));
+    // Threshold detection
+    const BLOW_THRESHOLD = 40; // Adjusted for frequency data
+    if (average > BLOW_THRESHOLD) {
+       setCandlesBlown(prev => Math.min(prev + 0.15, totalCandles));
     }
   };
 
-  // Manual fallback for people with broken mics
   const manualBlow = () => {
       setCandlesBlown(prev => Math.min(prev + 1, totalCandles));
   };
@@ -104,66 +93,73 @@ const BirthdayCake = () => {
       if(Math.floor(candlesBlown) >= totalCandles) {
           stopMusic(); 
           setIsListening(false);
+          // Notify parent that we are done!
+          if (onComplete) onComplete();
       }
-  }, [candlesBlown]);
+  }, [candlesBlown, onComplete, totalCandles]);
 
   return (
-    <div className="cake-container center-screen">
+    <div className="cake-wrapper">
       <audio ref={audioPlayerRef} src="/birthday-song.mp3" loop playsInline />
 
-      <div className="y2k-window" style={{maxWidth: '600px', width: '95%'}}>
-        <div className="title-bar">
-            <span>🎂 HappyBirthday.exe</span>
-            <div className="title-bar-controls"><div>_</div><div>□</div><div>X</div></div>
+      <div className="y2k-window" style={{maxWidth: '500px', margin: '0 auto'}}>
+        <div className="title-bar active">
+            <div className="title-text">🎂 celebration_setup.exe</div>
+            <div className="title-controls"><div className="control-box">_</div><div className="control-box">X</div></div>
         </div>
-        <div className="window-content" style={{textAlign: 'center', background: '#f0e6d2'}}>
+        <div className="window-content" style={{textAlign: 'center', background: '#E0F7FA'}}>
             
             {!isListening && candlesBlown === 0 && (
-                <div className="start-overlay">
-                    <p>Ready to make a wish?</p>
+                <div style={{padding: '20px'}}>
+                    <h3>Are you ready?</h3>
                     <button className="retro-btn" onClick={startListening}>
-                        Start Celebration 🎤
+                        Start Party 🎤
                     </button>
                 </div>
             )}
 
             {Math.floor(candlesBlown) >= totalCandles ? (
-                 <div className="wish-granted-msg">
-                     <h2>✨ WISH GRANTED! ✨</h2>
-                     <p>Scroll down to see your messages!</p>
+                 <div className="success-message">
+                     <h2 style={{color: 'green'}}>✨ WISH GRANTED! ✨</h2>
+                     <p>Unlocking surprises...</p>
                  </div>
             ) : (
-            <>
-                <div className={`cake ${isListening ? 'mic-active' : ''}`}>
-                    <div className="plate"></div>
-                    <div className="layer layer-bottom"></div>
-                    <div className="layer layer-middle"></div>
-                    <div className="layer layer-top"></div>
-                    <div className="icing"></div>
-                    
-                    <div className="candles-container">
-                        {[...Array(totalCandles)].map((_, i) => (
-                        <div key={i} className="candle">
-                            <div className={`flame ${i < Math.floor(candlesBlown) ? 'out' : ''}`}></div>
-                            <div className="wick"></div>
-                            <div className="wax"></div>
+            <div style={{display: isListening || candlesBlown > 0 ? 'block' : 'none'}}>
+                {/* MIC VISUALIZER */}
+                {isListening && (
+                    <div className="mic-meter-container">
+                        <div className="mic-meter-fill" style={{width: `${micLevel}%`}}></div>
+                        <span className="mic-label">MIC INPUT</span>
+                    </div>
+                )}
+
+                {/* THE CAKE */}
+                <div className="cake-container">
+                    <div className="cake-body">
+                        <div className="cake-layer bottom"></div>
+                        <div className="cake-layer middle"></div>
+                        <div className="cake-layer top"></div>
+                        <div className="cake-frosting"></div>
+                        <div className="candles-row">
+                            {[...Array(totalCandles)].map((_, i) => (
+                                <div key={i} className="candle">
+                                    <div className={`flame ${i < Math.floor(candlesBlown) ? 'out' : ''}`}></div>
+                                    <div className="wax"></div>
+                                </div>
+                            ))}
                         </div>
-                        ))}
                     </div>
                 </div>
 
                 {isListening && (
-                    <div className="controls">
-                        <p className="instruction blink-text" style={{color: 'red'}}>
-                            BLOW INTO MIC!
-                        </p>
-                        {/* THE BACKUP BUTTON */}
-                        <button className="retro-btn" onClick={manualBlow} style={{fontSize: '0.8rem', marginTop: '10px'}}>
-                            (Or click here to blow manually 🌬️)
-                        </button>
+                    <div style={{marginTop: '20px'}}>
+                         <p className="blink-text" style={{color: 'red'}}>BLOW INTO THE MIC!</p>
+                         <button onClick={manualBlow} style={{fontSize: '10px', background:'transparent', border:'none', textDecoration:'underline', cursor:'pointer'}}>
+                            (Mic broken? Click to blow)
+                         </button>
                     </div>
                 )}
-            </>
+            </div>
             )}
         </div>
       </div>

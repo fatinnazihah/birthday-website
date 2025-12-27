@@ -9,10 +9,21 @@ import '../styles/Navigation.css';
 const Navigation = ({ userType, setAuthenticated }) => {
   const navigate = useNavigate();
   const [showStartMenu, setShowStartMenu] = useState(false);
+  
+  // LOGIC: If guest, unlocked immediately. If admin, locked until cake is eaten.
+  const [isUnlocked, setIsUnlocked] = useState(userType === 'guest');
 
   const handleLogOff = () => {
       setAuthenticated(false);
       navigate('/');
+  };
+
+  const handleCakeComplete = () => {
+      setIsUnlocked(true);
+      // Optional: Auto scroll down after unlock
+      setTimeout(() => {
+          document.getElementById('letter-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 1000);
   };
 
   const scrollToSection = (id) => {
@@ -25,91 +36,89 @@ const Navigation = ({ userType, setAuthenticated }) => {
 
   return (
     <div className="dashboard-container">
-      {/* --- TASKBAR --- */}
+      {/* TASKBAR */}
       <nav className="y2k-taskbar">
-          <div 
-            className={`start-button ${showStartMenu ? 'active' : ''}`} 
-            onClick={() => setShowStartMenu(!showStartMenu)}
-          >
-              <span style={{marginRight: '5px'}}>🏁</span> Start
+          <div className="start-button" onClick={() => setShowStartMenu(!showStartMenu)}>
+              <span role="img" aria-label="flag">🏁</span> Start
           </div>
-          
-          <div className="taskbar-divider"></div>
-          
-          {/* Quick shortcuts on taskbar */}
-          <div className="taskbar-shortcuts">
-             <button onClick={() => scrollToSection('wishes-section')}>✉️ Wishes</button>
-             <button onClick={() => scrollToSection('gallery-section')}>📸 Photos</button>
-          </div>
-
           <div className="system-time">
-              {userType === 'birthday-girl' ? '👑 Admin Mode' : '👤 Guest Mode'}
+              {userType === 'birthday-girl' ? 'Logged in: Admin' : 'Logged in: Guest'}
           </div>
       </nav>
 
-      {/* --- START MENU POPUP --- */}
+      {/* START MENU */}
       {showStartMenu && (
           <div className="start-menu">
-              <div className="start-sidebar">
-                  <span className="vertical-text">WINDOWS 98</span>
-              </div>
+              <div className="start-sidebar"><span className="vertical-text">Win98</span></div>
               <div className="start-items">
-                  <div className="start-item" onClick={() => scrollToSection('cake-section')}>
-                      🎂 Blow Candles
-                  </div>
-                  
-                  {/* Only Birthday Girl sees the Letter */}
-                  {userType === 'birthday-girl' && (
-                    <div className="start-item" onClick={() => scrollToSection('letter-section')}>
-                        💌 Read Letter
-                    </div>
+                  {userType === 'birthday-girl' && !isUnlocked && (
+                      <div className="start-item">🎂 Blow Candles First!</div>
                   )}
-
-                  <div className="start-item" onClick={() => scrollToSection('wishes-section')}>
-                      📝 Guestbook
-                  </div>
-                  <div className="start-item" onClick={() => scrollToSection('gallery-section')}>
-                      🖼️ Gallery
-                  </div>
+                  {isUnlocked && (
+                    <>
+                        <div className="start-item" onClick={() => scrollToSection('wishes-section')}>✉️ Wishes</div>
+                        <div className="start-item" onClick={() => scrollToSection('gallery-section')}>📸 Gallery</div>
+                    </>
+                  )}
                   <div className="divider"></div>
-                  <div className="start-item" onClick={handleLogOff}>
-                      🔑 Log Off
-                  </div>
+                  <div className="start-item" onClick={handleLogOff}>🔑 Log Off</div>
               </div>
           </div>
       )}
 
-      {/* --- MAIN CONTENT (SCROLLABLE) --- */}
+      {/* MAIN CONTENT AREA */}
       <main className="dashboard-content">
-        <section id="cake-section">
-            <BirthdayCake />
-        </section>
         
-        <div className="y2k-divider">
-            <marquee scrollamount="10">*** HAPPY BIRTHDAY! *** SCROLL DOWN FOR SURPRISES ***</marquee>
-        </div>
-
-        {/* The Letter - Protected Content */}
-        {userType === 'birthday-girl' ? (
-             <section id="letter-section">
-                <HandwrittenLetter />
+        {/* SECTION 1: CAKE (Only for Birthday Girl) */}
+        {userType === 'birthday-girl' && (
+            <section id="cake-section">
+                {/* Pass the callback function! */}
+                <BirthdayCake onComplete={handleCakeComplete} />
             </section>
-        ) : (
-            <div style={{textAlign:'center', padding: '20px', opacity: 0.7}}>
-                (A secret letter is hidden here for the birthday girl...)
-            </div>
         )}
 
-        <section id="wishes-section">
-            <WishesWall userType={userType} />
-        </section>
+        {/* SECTION 2: THE REST (Hidden until unlocked) */}
+        {isUnlocked && (
+            <div className="unlocked-content">
+                
+                <div className="y2k-divider">
+                    <marquee>*** WELCOME TO THE PARTY ***</marquee>
+                </div>
 
-        <section id="gallery-section">
-            <PhotoGallery userType={userType} />
-        </section>
-        
-        {/* Extra padding at bottom so scrolling doesn't feel tight */}
-        <div style={{height: '100px'}}></div>
+                {/* SECTION 3: LETTER (Only for Birthday Girl) */}
+                {userType === 'birthday-girl' && (
+                    <section id="letter-section">
+                        <HandwrittenLetter />
+                    </section>
+                )}
+
+                {/* SECTION 4: WISHES WALL (WINDOW STYLE) */}
+                <section id="wishes-section">
+                    <div className="y2k-window">
+                        <div className="title-bar">
+                            <div className="title-text">✉️ Inbox - Outlook Express</div>
+                            <div className="title-controls"><div className="control-box">X</div></div>
+                        </div>
+                        <div className="window-content" style={{background: '#fff'}}>
+                            <WishesWall userType={userType} />
+                        </div>
+                    </div>
+                </section>
+
+                {/* SECTION 5: GALLERY (WINDOW STYLE) */}
+                <section id="gallery-section">
+                     <div className="y2k-window">
+                        <div className="title-bar">
+                            <div className="title-text">📁 My Pictures - C:\Users\BirthdayGirl</div>
+                            <div className="title-controls"><div className="control-box">X</div></div>
+                        </div>
+                        <div className="window-content">
+                            <PhotoGallery userType={userType} />
+                        </div>
+                    </div>
+                </section>
+            </div>
+        )}
       </main>
     </div>
   );
