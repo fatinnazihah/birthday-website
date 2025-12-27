@@ -24,20 +24,18 @@ const BirthdayCake = ({ onComplete }) => {
 
   const startCelebration = async () => {
     try {
-      // 1. Play Music
       if(audioPlayerRef.current) {
           audioPlayerRef.current.volume = 0.5;
           audioPlayerRef.current.play().catch(e => console.log("Audio Error:", e));
       }
 
-      // 2. Setup Mic with aggressive settings
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       audioContextRef.current = new AudioContext();
       await audioContextRef.current.resume();
 
       const stream = await navigator.mediaDevices.getUserMedia({ 
         audio: {
-            echoCancellation: false, // Turn off filters to hear "wind"
+            echoCancellation: false,
             noiseSuppression: false,
             autoGainControl: false
         }
@@ -48,8 +46,9 @@ const BirthdayCake = ({ onComplete }) => {
       analyserRef.current = audioContextRef.current.createAnalyser();
       sourceRef.current = audioContextRef.current.createMediaStreamSource(stream);
       
-      analyserRef.current.fftSize = 256;
-      const bufferLength = analyserRef.current.frequencyBinCount;
+      // Use TimeDomainData for better volume detection
+      analyserRef.current.fftSize = 2048;
+      const bufferLength = analyserRef.current.fftSize;
       dataArrayRef.current = new Uint8Array(bufferLength);
 
       sourceRef.current.connect(analyserRef.current);
@@ -63,22 +62,23 @@ const BirthdayCake = ({ onComplete }) => {
     if (!analyserRef.current || !isListening) return;
 
     animationFrameRef.current = requestAnimationFrame(detectSound);
-    analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+    
+    // Get waveform data (volume) instead of frequency
+    analyserRef.current.getByteTimeDomainData(dataArrayRef.current);
 
-    // Calculate total volume (loudness)
     let sum = 0;
     for (let i = 0; i < dataArrayRef.current.length; i++) {
-      sum += dataArrayRef.current[i];
+      const value = (dataArrayRef.current[i] - 128) / 128; // Normalize
+      sum += value * value;
     }
-    const average = sum / dataArrayRef.current.length;
-    
-    // Update visualizer (multiply to make it look sensitive)
-    setMicLevel(Math.min(100, average * 2)); 
+    const rms = Math.sqrt(sum / dataArrayRef.current.length);
+    const volume = rms * 100; // Scale up
 
-    // SUPER SENSITIVE THRESHOLD:
-    // If average volume is above 10 (very quiet), count it as a blow
-    if (average > 10 && candlesBlown < totalCandles) {
-       setCandlesBlown(prev => Math.min(prev + 0.05, totalCandles));
+    setMicLevel(Math.min(100, volume * 4)); // Visual sensitivity
+
+    // THRESHOLD: 5 is usually a decent "blow" or loud noise
+    if (volume > 5 && candlesBlown < totalCandles) {
+       setCandlesBlown(prev => Math.min(prev + 0.1, totalCandles));
     }
   };
 
@@ -103,10 +103,10 @@ const BirthdayCake = ({ onComplete }) => {
 
       <div className="y2k-window" style={{maxWidth: '400px', margin: '0 auto'}}>
         <div className="title-bar">
-            <div className="title-text">🎂 celebration.exe</div>
+            <div className="title-text" style={{color:'white'}}>🎂 celebration.exe</div>
             <div className="title-controls"><div className="control-btn">X</div></div>
         </div>
-        <div className="window-content" style={{textAlign: 'center', background: '#E0F7FA'}}>
+        <div className="window-content" style={{textAlign: 'center', background: '#E0F7FA', minHeight:'250px'}}>
             
             {!isListening && candlesBlown === 0 && (
                 <div style={{padding: '20px'}}>
@@ -130,12 +130,14 @@ const BirthdayCake = ({ onComplete }) => {
                     </div>
                 )}
 
-                {/* NEW PIXEL ART STYLE CAKE */}
                 <div className="pixel-cake">
                     <div className="candle-row">
                         {[...Array(totalCandles)].map((_, i) => (
                             <div key={i} className="pixel-candle">
-                                <div className={`pixel-flame ${i < Math.floor(candlesBlown) ? 'out' : ''}`}></div>
+                                {/* Only show flame if candle is NOT blown out */}
+                                {i >= Math.floor(candlesBlown) && (
+                                    <div className="pixel-flame"></div>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -146,8 +148,8 @@ const BirthdayCake = ({ onComplete }) => {
                 </div>
 
                 {isListening && (
-                    <button onClick={manualBlow} style={{marginTop:'15px', background:'none', border:'none', textDecoration:'underline', cursor:'pointer', fontSize:'10px'}}>
-                        (Click here if mic is broken)
+                    <button onClick={manualBlow} style={{marginTop:'30px', background:'none', border:'none', textDecoration:'underline', cursor:'pointer', fontSize:'10px'}}>
+                        (Mic broken? Click to blow)
                     </button>
                 )}
             </div>

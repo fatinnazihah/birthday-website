@@ -1,10 +1,4 @@
 .letter-container {
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-}
-
-.letter-container {
     padding: 20px;
     display: flex;
     justify-content: center;
@@ -13,32 +7,45 @@
 .notepad-window {
     width: 100%;
     max-width: 600px;
-    /* Use 'vh' so it fits on mobile screens nicely */
     height: 60vh; 
     min-height: 300px;
     background: #ffffff;
     display: flex;
     flex-direction: column;
-    border: 2px solid #000; /* Solid border for contrast */
+    border: 2px solid #000;
 }
 
+/* FIX: Ensure the title bar text is WHITE */
+.notepad-window .title-bar {
+    background: navy;
+    color: white; /* Force white text */
+    padding: 2px 5px;
+}
+/* Ensure the specific text span inside is also white */
+.notepad-window .title-bar span, 
+.notepad-window .title-bar .title-text {
+    color: white !important;
+}
+
+/* FIX: Space out the menu items */
 .notepad-menubar {
     background: #c0c0c0;
     border-bottom: 1px solid #808080;
-    padding: 2px 8px;
+    padding: 4px 10px;
     font-family: 'Arial', sans-serif;
     font-size: 14px;
     color: black;
+    display: flex;
+    gap: 20px; /* This adds space between File Edit Search */
 }
 
 .notepad-content {
     background: #ffffff;
-    color: #000000; /* Force black text */
+    color: #000000;
     font-family: 'Courier Prime', 'Courier New', monospace;
     font-size: 1.1rem;
     line-height: 1.5;
     padding: 20px;
-    /* This makes the text scrollable! */
     flex-grow: 1;
     overflow-y: auto; 
     white-space: pre-wrap;
