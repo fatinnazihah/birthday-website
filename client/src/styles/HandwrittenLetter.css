@@ -15,19 +15,58 @@
     border: 2px solid #000;
 }
 
-/* FIX: Ensure the title bar text is WHITE */
+/* --- TITLE BAR STYLING --- */
 .notepad-window .title-bar {
     background: navy;
-    color: white; /* Force white text */
-    padding: 2px 5px;
-}
-/* Ensure the specific text span inside is also white */
-.notepad-window .title-bar span, 
-.notepad-window .title-bar .title-text {
-    color: white !important;
+    color: white;
+    padding: 2px 4px; /* Slight padding for spacing */
+    display: flex;    /* Essential for alignment */
+    justify-content: space-between; /* Pushes text to left, controls to right */
+    align-items: center; /* Vertically centers them */
 }
 
-/* FIX: Space out the menu items */
+.notepad-window .title-bar span {
+    color: white !important;
+    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 13px;
+}
+
+/* --- THE FIX: CONTROLS LAYOUT --- */
+.title-bar-controls {
+    display: flex; /* THIS forces them next to each other */
+    gap: 2px;      /* Small space between buttons */
+}
+
+/* Style the Minimize/Maximize/Close buttons */
+.title-bar-controls div {
+    width: 16px; 
+    height: 14px;
+    background: #c0c0c0;
+    color: black;
+    font-family: sans-serif;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: center;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Optional: Make the X button look clickable */
+.title-bar-controls div:active {
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+}
+
+/* --- MENU BAR --- */
 .notepad-menubar {
     background: #c0c0c0;
     border-bottom: 1px solid #808080;
@@ -36,9 +75,10 @@
     font-size: 14px;
     color: black;
     display: flex;
-    gap: 20px; /* This adds space between File Edit Search */
+    gap: 20px;
 }
 
+/* --- CONTENT --- */
 .notepad-content {
     background: #ffffff;
     color: #000000;
