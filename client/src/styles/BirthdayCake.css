@@ -1,0 +1,144 @@
+.cake-container {
+  text-align: center;
+  padding: 40px 20px;
+  color: white;
+}
+
+.cake-title {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  animation: bounce 1s infinite;
+}
+
+.cake {
+  position: relative;
+  margin: 0 auto 40px;
+  width: 300px;
+}
+
+.candles {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.candle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.flame {
+  font-size: 24px;
+  transition: all 0.3s;
+  animation: flicker 0.5s infinite;
+}
+
+.flame.lit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.flame.out {
+  opacity: 0;
+  transform: scale(0);
+}
+
+@keyframes flicker {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-3px) scale(1.1); }
+}
+
+.wick {
+  width: 3px;
+  height: 20px;
+  background: #333;
+  margin-bottom: 5px;
+}
+
+.candle-body {
+  width: 15px;
+  height: 60px;
+  background: linear-gradient(to bottom, #ff6b9d, #ffc3d8);
+  border-radius: 8px 8px 0 0;
+  box-shadow: inset 0 -5px 10px rgba(0,0,0,0.2);
+}
+
+.cake-layer {
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(to bottom, #8b4513, #654321);
+  border-radius: 10px;
+  margin-bottom: 5px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.layer-1 { width: 280px; margin: 0 auto 5px; }
+.layer-2 { width: 300px; margin: 0 auto 5px; }
+.layer-3 { width: 320px; margin: 0 auto; height: 80px; }
+
+.frosting {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, #ffc3d8, #ff6b9d);
+  border-radius: 20px 20px 0 0;
+}
+
+.controls {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.blow-btn, .stop-btn, .reset-btn {
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.blow-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.stop-btn {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.reset-btn {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.success-message {
+  font-size: 1.5rem;
+  color: #ffd700;
+  margin-top: 20px;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
