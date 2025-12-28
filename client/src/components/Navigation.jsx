@@ -82,7 +82,7 @@ const Navigation = ({ userType, setAuthenticated }) => {
             <div className="unlocked-content">
                 
                 <div className="y2k-divider">
-                    <marquee>*** WELCOME TO THE SONIA'S DIGITAL BIRTHDAY PARTY! ***</marquee>
+                    <marquee>*** WELCOME TO SONIA'S DIGITAL BIRTHDAY PARTY! ***</marquee>
                 </div>
 
                 {/* SECTION 3: LETTER (Only for Birthday Girl) */}
